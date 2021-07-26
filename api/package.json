@@ -26,6 +26,8 @@
     "@nestjs/platform-fastify": "^8.0.4",
     "@prisma/client": "^2.27.0",
     "apollo-server-fastify": "^3.0.2",
+    "bcrypt": "^5.0.1",
+    "crypto-random-string": "^3.3.0",
     "graphql": "^15.5.1",
     "graphql-tools": "^7.0.5",
     "reflect-metadata": "^0.1.13",

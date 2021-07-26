@@ -3,7 +3,6 @@ import {
   FastifyAdapter,
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
-import { ValidationPipe } from '@nestjs/common';
 
 import { PrismaService } from './prisma_client/prisma.service';
 import { AppModule } from './app.module';
@@ -15,8 +14,6 @@ async function bootstrap() {
       logger: true,
     }),
   );
-
-  app.useGlobalPipes(new ValidationPipe());
 
   const prismaService: PrismaService = app.get(PrismaService);
   prismaService.enableShutdownHooks(app);
