@@ -1,6 +1,13 @@
 import { Args, Mutation, Resolver, Query } from '@nestjs/graphql';
 
-import { UserOutputDto, UserSignInInput, UserSignUpInput } from './auth.dto';
+import {
+  CreateResetToken,
+  ResetPasswordTokenDto,
+  ResetUserPassword,
+  UserOutputDto,
+  UserSignInInput,
+  UserSignUpInput,
+} from './auth.dto';
 import { AuthService } from './auth.service';
 
 @Resolver()
@@ -21,6 +28,22 @@ export class AuthResolver {
     userSignInInput: UserSignInInput,
   ): Promise<UserOutputDto> {
     return await this.authService.signIn(userSignInInput);
+  }
+
+  @Mutation(() => ResetPasswordTokenDto)
+  async createResetToken(
+    @Args({ name: 'userEmail', type: () => CreateResetToken })
+    email: CreateResetToken,
+  ): Promise<ResetPasswordTokenDto> {
+    return await this.authService.createResetToken(email);
+  }
+
+  @Mutation(() => UserOutputDto)
+  async resetPassword(
+    @Args({ name: 'resetPassword', type: () => ResetUserPassword })
+    resetPassword: ResetUserPassword,
+  ): Promise<UserOutputDto> {
+    return await this.authService.resetPassword(resetPassword);
   }
 
   @Query(() => String)

@@ -8,6 +8,7 @@ import { PrismaService } from 'src/prisma_client/prisma.service';
 import { UserModel } from 'src/user/user.model';
 import {
   CreateResetToken,
+  ResetPasswordTokenDto,
   ResetUserPassword,
   UserOutputDto,
   UserSignInInput,
@@ -85,17 +86,19 @@ export class AuthService {
     return await this.generateLoginPayload(updatedUser);
   }
 
-  async createResetToken({ email }: CreateResetToken): Promise<UserTokens> {
+  async createResetToken({
+    email,
+  }: CreateResetToken): Promise<ResetPasswordTokenDto> {
     const user = await UserModel({ email });
 
     if (!user.exists) throw new HttpException('Not Found', 404);
 
-    const token = await this.tokenService.createToken(
+    const { token } = await this.tokenService.createToken(
       user.id,
       TokenTypes.RESET_PASSWORD,
     );
 
-    return token;
+    return { token };
   }
 
   private async generateLoginPayload(

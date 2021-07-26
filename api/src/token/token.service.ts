@@ -9,7 +9,7 @@ import { PrismaService } from 'src/prisma_client/prisma.service';
 export class TokenService {
   constructor(private readonly prisma: PrismaService) {}
 
-  TOKEN_LENGTH = 8;
+  TOKEN_LENGTH = 16;
 
   async createJwtToken(
     token: string,

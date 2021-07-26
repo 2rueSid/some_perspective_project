@@ -47,6 +47,12 @@ export class ResetUserPassword {
 }
 
 @ObjectType()
+export class ResetPasswordTokenDto {
+  @Field()
+  token: string;
+}
+
+@ObjectType()
 export class UserOutputDto {
   @Field({ nullable: true })
   slug?: string;
