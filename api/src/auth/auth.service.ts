@@ -1,12 +1,13 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { addDays } from 'date-fns';
-import { User } from '@prisma/client';
+import { TokenTypes, User, UserTokens } from '@prisma/client';
 import * as cryptoRandomString from 'crypto-random-string';
 import * as bcrypt from 'bcrypt';
 
 import { PrismaService } from 'src/prisma_client/prisma.service';
 import { UserModel } from 'src/user/user.model';
 import {
+  CreateResetToken,
   ResetUserPassword,
   UserOutputDto,
   UserSignInInput,
@@ -84,9 +85,19 @@ export class AuthService {
     return await this.generateLoginPayload(updatedUser);
   }
 
-  
-  // CreateResetToken;
-  // ResetUserPassword;
+  async createResetToken({ email }: CreateResetToken): Promise<UserTokens> {
+    const user = await UserModel({ email });
+
+    if (!user.exists) throw new HttpException('Not Found', 404);
+
+    const token = await this.tokenService.createToken(
+      user.id,
+      TokenTypes.RESET_PASSWORD,
+    );
+
+    return token;
+  }
+
   private async generateLoginPayload(
     user: User,
     remember_me?: boolean,
