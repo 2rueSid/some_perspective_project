@@ -48,6 +48,8 @@ export class AuthService {
       },
     });
 
+    await this.sendActivationEmail(createdUser);
+
     return await this.generateLoginPayload(createdUser, false);
   }
 
@@ -115,6 +117,17 @@ export class AuthService {
     const { token } = await this.tokenService.createToken(
       user.id,
       TokenTypes.RESET_PASSWORD,
+    );
+
+    return { token };
+  }
+
+  private async sendActivationEmail(
+    user: User,
+  ): Promise<ResetPasswordTokenDto> {
+    const { token } = await this.tokenService.createToken(
+      user.id,
+      TokenTypes.ACTIVATE_EMAIL,
     );
 
     return { token };

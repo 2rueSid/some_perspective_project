@@ -41,20 +41,16 @@ export class TokenService {
     expired?: Date,
   ): Promise<UserTokens> {
     const expiresAt = expired ? expired : addDays(new Date(), 7);
+
     const token = await cryptoRandomString({
       length: this.TOKEN_LENGTH,
       type: 'url-safe',
     });
 
-    await this.deleteToken({
-      user_id: userId,
-      type: type,
-    });
-
     return await this.prisma.userTokens.create({
       data: {
         token,
-        type: TokenTypes.AUTHORIZATION,
+        type,
         lifetime: expiresAt,
         user_id: userId,
       },
