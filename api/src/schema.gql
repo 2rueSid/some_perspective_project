@@ -1,0 +1,38 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Mutation {
+  signUp(signUpInput: UserSignUpInput!): UserOutputDto!
+  singIn(signInInput: UserSignInInput!): UserOutputDto!
+}
+
+type Query {
+  sayHello: String!
+}
+
+type UserOutputDto {
+  authorization_token: String
+  email: String
+  first_name: String
+  is_active: Boolean
+  is_deleted: Boolean
+  is_disabled: Boolean
+  last_name: String
+  role: String
+  slug: String
+}
+
+input UserSignInInput {
+  email: String!
+  password: String!
+  remember_me: Boolean = false
+}
+
+input UserSignUpInput {
+  email: String!
+  first_name: String!
+  last_name: String
+  password: String!
+  send_emails: Boolean!
+}

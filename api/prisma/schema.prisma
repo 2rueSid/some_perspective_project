@@ -13,6 +13,7 @@ generator client {
 model User {
   id          Int       @id @default(autoincrement())
   email       String    @unique
+  slug        String    @unique @default("")
   password    String
   first_name  String
   last_name   String?
@@ -25,6 +26,7 @@ model User {
   updated_at  DateTime  @default(now())
 
   UserTokens UserTokens[]
+  @@unique([email, slug])
   @@map("users")
 }
 

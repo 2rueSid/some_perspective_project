@@ -1,12 +1,22 @@
+import { join } from 'path';
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-
-import { PrismaService } from './prisma_client/prisma.service';
+import { GraphQLModule } from '@nestjs/graphql';
+import { AuthModule } from './auth/auth.module';
+import { PrismaModule } from './prisma_client/prisma.module';
+import { configModule } from './config.module';
+import { TokenModule } from './token/token.module';
 
 @Module({
-  imports: [],
-  controllers: [AppController],
-  providers: [AppService, PrismaService],
+  imports: [
+    GraphQLModule.forRoot({
+      sortSchema: true,
+      debug: true,
+      autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+    }),
+    AuthModule,
+    PrismaModule,
+    configModule,
+    TokenModule,
+  ],
 })
 export class AppModule {}
