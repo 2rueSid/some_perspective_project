@@ -1,23 +1,33 @@
 import { HttpException, Injectable } from '@nestjs/common';
+import { addDays } from 'date-fns';
 import { User } from '@prisma/client';
 import * as cryptoRandomString from 'crypto-random-string';
 import * as bcrypt from 'bcrypt';
 
 import { PrismaService } from 'src/prisma_client/prisma.service';
 import { UserModel } from 'src/user/user.model';
-import { UserSignUpInput } from './auth.dto';
+import { UserOutputDto, UserSignInInput, UserSignUpInput } from './auth.dto';
+import { TokenService } from 'src/token/token.service';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
   private readonly saltRounds = 10;
 
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly tokenService: TokenService,
+    private readonly jwtService: JwtService,
+  ) {}
 
-  async signUp({ password, ...userData }: UserSignUpInput): Promise<User> {
+  async signUp({
+    password,
+    ...userData
+  }: UserSignUpInput): Promise<UserOutputDto> {
     const user = await UserModel({ email: userData.email });
 
     if (user.exists) {
-      throw new HttpException('User already exists', 403);
+      throw new HttpException('User already exists', 401);
     }
 
     const slug = await this.generateSlug(6);
@@ -31,7 +41,42 @@ export class AuthService {
       },
     });
 
-    return createdUser;
+    return await this.generateLoginPayload(createdUser, false);
+  }
+
+  async signIn({
+    email,
+    password,
+    remember_me,
+  }: UserSignInInput): Promise<UserOutputDto> {
+    const user = await UserModel({ email });
+
+    if (!user.exists) {
+      throw new HttpException('Not Found!', 404);
+    }
+
+    if (!user.comparePasswords(password)) {
+      throw new HttpException('Invalid data', 403);
+    }
+
+    return await this.generateLoginPayload(user, remember_me);
+  }
+
+  private async generateLoginPayload(
+    user: User,
+    remember_me?: boolean,
+  ): Promise<UserOutputDto> {
+    const expiresAt = remember_me && addDays(new Date(), 30);
+
+    if (user.password) delete user.password;
+
+    const token = await this.jwtService.sign(
+      { email: user.email, id: user.id, role: user.role, slug: user.slug },
+      { expiresIn: '30d' },
+    );
+    await this.tokenService.createJwtToken(token, user.id, expiresAt);
+
+    return { authorization_token: token, ...user };
   }
 
   private async generateSlug(length: number, type?): Promise<string> {

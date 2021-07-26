@@ -19,6 +19,18 @@ export class UserSignUpInput {
   send_emails: boolean;
 }
 
+@InputType()
+export class UserSignInInput {
+  @Field()
+  email: string;
+
+  @Field()
+  password: string;
+
+  @Field({ defaultValue: false })
+  remember_me?: boolean;
+}
+
 @ObjectType()
 export class UserOutputDto {
   @Field({ nullable: true })
@@ -44,4 +56,7 @@ export class UserOutputDto {
 
   @Field({ nullable: true })
   is_deleted?: boolean;
+
+  @Field({ nullable: true })
+  authorization_token: string;
 }

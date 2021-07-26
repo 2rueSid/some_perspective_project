@@ -1,7 +1,6 @@
 import { Args, Mutation, Resolver, Query } from '@nestjs/graphql';
-import { User } from '@prisma/client';
 
-import { UserOutputDto, UserSignUpInput } from './auth.dto';
+import { UserOutputDto, UserSignInInput, UserSignUpInput } from './auth.dto';
 import { AuthService } from './auth.service';
 
 @Resolver()
@@ -12,8 +11,16 @@ export class AuthResolver {
   async signUp(
     @Args({ name: 'signUpInput', type: () => UserSignUpInput })
     userSignUpInput: UserSignUpInput,
-  ): Promise<User> {
+  ): Promise<UserOutputDto> {
     return await this.authService.signUp(userSignUpInput);
+  }
+
+  @Mutation(() => UserOutputDto)
+  async singIn(
+    @Args({ name: 'signInInput', type: () => UserSignInInput })
+    userSignInInput: UserSignInInput,
+  ): Promise<UserOutputDto> {
+    return await this.authService.signIn(userSignInInput);
   }
 
   @Query(() => String)
