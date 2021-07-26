@@ -31,6 +31,21 @@ export class UserSignInInput {
   remember_me?: boolean;
 }
 
+@InputType()
+export class CreateResetToken {
+  @Field()
+  email: string;
+}
+
+@InputType()
+export class ResetUserPassword {
+  @Field()
+  reset_token: string;
+
+  @Field()
+  password: string;
+}
+
 @ObjectType()
 export class UserOutputDto {
   @Field({ nullable: true })
