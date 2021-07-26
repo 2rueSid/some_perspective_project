@@ -46,6 +46,12 @@ export class ResetUserPassword {
   password: string;
 }
 
+@InputType()
+export class ActivateUserInput {
+  @Field()
+  activate_token: string;
+}
+
 @ObjectType()
 export class ResetPasswordTokenDto {
   @Field()

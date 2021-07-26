@@ -7,6 +7,7 @@ import * as bcrypt from 'bcrypt';
 import { PrismaService } from 'src/prisma_client/prisma.service';
 import { UserModel } from 'src/user/user.model';
 import {
+  ActivateUserInput,
   CreateResetToken,
   ResetPasswordTokenDto,
   ResetUserPassword,
@@ -47,6 +48,8 @@ export class AuthService {
       },
     });
 
+    await this.sendActivationEmail(createdUser);
+
     return await this.generateLoginPayload(createdUser, false);
   }
 
@@ -63,6 +66,24 @@ export class AuthService {
       throw new HttpException('Invalid data', 403);
 
     return await this.generateLoginPayload(user, remember_me);
+  }
+
+  async activateAccount({
+    activate_token,
+  }: ActivateUserInput): Promise<UserOutputDto> {
+    const { user, ...token } = await TokenModel({ token: activate_token });
+
+    if (!token.is_valid)
+      throw new HttpException('Bad request. Token has expired', 403);
+
+    await this.prisma.userTokens.delete({ where: { id: token.id } });
+
+    await this.prisma.user.update({
+      where: { id: user.id },
+      data: { is_active: true },
+    });
+
+    return await this.generateLoginPayload(user);
   }
 
   async resetPassword({
@@ -96,6 +117,17 @@ export class AuthService {
     const { token } = await this.tokenService.createToken(
       user.id,
       TokenTypes.RESET_PASSWORD,
+    );
+
+    return { token };
+  }
+
+  private async sendActivationEmail(
+    user: User,
+  ): Promise<ResetPasswordTokenDto> {
+    const { token } = await this.tokenService.createToken(
+      user.id,
+      TokenTypes.ACTIVATE_EMAIL,
     );
 
     return { token };

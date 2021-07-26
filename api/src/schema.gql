@@ -2,11 +2,16 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+input ActivateUserInput {
+  activate_token: String!
+}
+
 input CreateResetToken {
   email: String!
 }
 
 type Mutation {
+  activateUserAccount(activateAccount: ActivateUserInput!): UserOutputDto!
   createResetToken(userEmail: CreateResetToken!): ResetPasswordTokenDto!
   resetPassword(resetPassword: ResetUserPassword!): UserOutputDto!
   signUp(signUpInput: UserSignUpInput!): UserOutputDto!
