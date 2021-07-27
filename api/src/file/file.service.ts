@@ -1,4 +1,5 @@
 import { Inject, Injectable, Logger, LoggerService } from '@nestjs/common';
+import { User } from '@prisma/client';
 
 import { PrismaService } from 'src/prisma_client/prisma.service';
 import { FileOutput } from './file.dto';
@@ -10,17 +11,14 @@ export class FileService {
     @Inject(Logger) private readonly logger: LoggerService,
   ) {}
 
-  async uploadFiles(files: Express.Multer.File[]): Promise<boolean> {
-    this.logger.debug(files);
-
+  async uploadFiles(
+    files: Express.Multer.File[],
+    user: Partial<User>,
+  ): Promise<boolean> {
+    console.log(files);
     return true;
   }
 }
-// {
-//   "filename": "Screenshot from 2021-06-18 11-43-40.png",
-//   "mimetype": "image/png",
-//   "encoding": "7bit"
-// }
 
 //  id           Int       @id @default(autoincrement())
 //   name         String
