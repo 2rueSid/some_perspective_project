@@ -17,6 +17,7 @@ model User {
   password    String
   first_name  String
   last_name   String?
+  avatar_id   Int?
   role        Role      @default(USER)
   is_active   Boolean   @default(false)
   is_disabled Boolean   @default(false)
@@ -26,6 +27,11 @@ model User {
   updated_at  DateTime  @default(now())
 
   UserTokens UserTokens[]
+  File       File[]
+  Photo      Photo[]
+  Tags       Tags[]
+  UserLikes  UserLikes[]
+
   @@unique([email, slug])
   @@map("users")
 }
@@ -36,16 +42,85 @@ model UserTokens {
   lifetime   DateTime
   type       TokenTypes
   user_id    Int
-  user       User       @relation(fields: [user_id], references: [id])
   created_at DateTime   @default(now())
   updated_at DateTime   @default(now())
 
+  User User @relation(fields: [user_id], references: [id])
+
   @@map("user_tokens")
+}
+
+model Photo {
+  id          Int       @id @default(autoincrement())
+  title       String
+  slug        String    @unique
+  description String?
+  user_id     Int
+  deleted_at  DateTime?
+  created_at  DateTime  @default(now())
+  updated_at  DateTime  @default(now())
+
+  User       User        @relation(fields: [user_id], references: [id])
+  Files      File[]
+  CustomTags Tags[]
+  UserLikes  UserLikes[]
+
+  @@map("photos")
+}
+
+model File {
+  id           Int       @id @default(autoincrement())
+  name         String
+  originalname String
+  size         Int
+  extension    String
+  type         FileTypes
+  download     String?
+  user_id      Int
+  photo_id     Int?
+  created_at   DateTime  @default(now())
+  updated_at   DateTime  @default(now())
+
+  User  User   @relation(fields: [user_id], references: [id])
+  Photo Photo? @relation(fields: [photo_id], references: [id])
+  @@map("uploaded_files")
+}
+
+model Tags {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String?
+  photo_id    Int?
+  user_id     Int?
+  created_at  DateTime @default(now())
+  updated_at  DateTime @default(now())
+
+  User  User?   @relation(fields: [user_id], references: [id])
+  Photo Photo[] @relation(fields: [photo_id], references: [id])
+}
+
+model UserLikes {
+  id          Int      @id @default(autoincrement())
+  user_id     Int
+  photo_id    Int
+  is_liked    Boolean
+  is_disliked Boolean
+  created_at  DateTime @default(now())
+  updated_at  DateTime @default(now())
+
+  User  User  @relation(fields: [user_id], references: [id])
+  Photo Photo @relation(fields: [photo_id], references: [id])
 }
 
 enum Role {
   USER
   ADMIN
+}
+
+enum FileTypes {
+  PHOTO
+  AVATAR
+  FILE
 }
 
 enum TokenTypes {

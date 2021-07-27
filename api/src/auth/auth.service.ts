@@ -1,6 +1,6 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { addDays } from 'date-fns';
-import { TokenTypes, User, UserTokens } from '@prisma/client';
+import { TokenTypes, User } from '@prisma/client';
 import * as cryptoRandomString from 'crypto-random-string';
 import * as bcrypt from 'bcrypt';
 
