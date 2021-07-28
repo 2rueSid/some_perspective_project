@@ -39,6 +39,13 @@ type FileGraphQL {
   user_id: Float!
 }
 
+type MetaPagination {
+  currentPage: Float!
+  itemCount: Float!
+  totalItems: Float!
+  totalPages: Float!
+}
+
 type Mutation {
   activateUserAccount(activateAccount: ActivateUserInput!): UserOutputDto!
   createPhoto(createPhotoArgs: CreatePhotoInput!): PhotoOutputDto!
@@ -52,7 +59,9 @@ type Mutation {
 }
 
 input PaginationOptions {
-  cursor: Float!
+  page: Float!
+  skip: Float!
+  take: Float!
 }
 
 type PhotoGraphQL {
@@ -73,15 +82,21 @@ type PhotoOutputDto {
   UserLikes: [UserLikesGraphQL!]
   deleted_at: DateTime
   description: String!
+  slug: String!
   title: String!
   user_id: Float
+}
+
+type PhotosWithPaginationDto {
+  items: [PhotoOutputDto!]!
+  meta: MetaPagination!
 }
 
 type Query {
   getLikedPhotos(paginationOptions: PaginationOptions!): [PhotoOutputDto!]!
   getPhotoBySlug(photoSlug: String!): PhotoOutputDto!
   getPhotos(paginationOptions: PaginationOptions!): [PhotoOutputDto!]!
-  getUserPhotos(paginationOptions: PaginationOptions!): [PhotoOutputDto!]!
+  getUserPhotos(paginationOptions: PaginationOptions!): PhotosWithPaginationDto!
   sayHello: String!
 }
 

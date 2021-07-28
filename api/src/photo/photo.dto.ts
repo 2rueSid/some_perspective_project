@@ -1,4 +1,4 @@
-import { Field, InputType, ObjectType, PickType } from '@nestjs/graphql';
+import { Field, InputType, ObjectType } from '@nestjs/graphql';
 import { FileGraphQL } from 'src/file/file.dto';
 import { TagsGraphQL } from 'src/tags/tags.dto';
 import { UserGraphQL } from 'src/user/user.dto';
@@ -30,6 +30,9 @@ export class PhotoOutputDto {
   @Field({ nullable: true })
   deleted_at?: Date;
 
+  @Field()
+  slug: string;
+
   @Field(() => UserGraphQL)
   User?: UserGraphQL;
 
@@ -58,7 +61,13 @@ export class UpdatePhotoInput {
 @InputType()
 export class PaginationOptions {
   @Field()
-  cursor: number;
+  skip: number;
+
+  @Field()
+  take: number;
+
+  @Field()
+  page?: number;
 }
 
 @InputType()
@@ -85,4 +94,28 @@ export class PhotoGraphQL {
   created_at?: Date;
   @Field()
   updated_at?: Date;
+}
+
+@ObjectType()
+export class MetaPagination {
+  @Field()
+  itemCount: number;
+
+  @Field()
+  totalItems: number;
+
+  @Field()
+  totalPages: number;
+
+  @Field()
+  currentPage: number;
+}
+
+@ObjectType()
+export class PhotosWithPaginationDto {
+  @Field(() => [PhotoOutputDto])
+  items: PhotoOutputDto[];
+
+  @Field(() => MetaPagination)
+  meta: MetaPagination;
 }

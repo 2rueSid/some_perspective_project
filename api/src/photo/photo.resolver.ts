@@ -8,6 +8,7 @@ import {
   DeletePhotoInput,
   PaginationOptions,
   PhotoOutputDto,
+  PhotosWithPaginationDto,
   UpdatePhotoInput,
 } from './photo.dto';
 import { PhotoService } from './photo.service';
@@ -53,13 +54,13 @@ export class PhotoResolver {
     return await this.photoService.getPhotoBySlug(photoSlug);
   }
 
-  @Query(() => [PhotoOutputDto])
+  @Query(() => PhotosWithPaginationDto)
   @UseGuards(GqlAuthGuard)
   async getUserPhotos(
     @Args({ name: 'paginationOptions', type: () => PaginationOptions })
     pagination: PaginationOptions,
     @CurrentUser() user: Partial<User>,
-  ): Promise<Partial<PhotoOutputDto[]>> {
+  ): Promise<Partial<PhotosWithPaginationDto>> {
     return await this.photoService.getUserPhotos(user, pagination);
   }
 

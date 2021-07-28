@@ -5,25 +5,23 @@ import { generateSlug } from 'src/utils/generate_slug';
 import {
   CreatePhotoInput,
   DeletePhotoInput,
+  MetaPagination,
   PaginationOptions,
   PhotoOutputDto,
+  PhotosWithPaginationDto,
   UpdatePhotoInput,
 } from './photo.dto';
 import { PhotoModel } from './photo.model';
 
-export const PHOTO_TAKE = 20;
-export const PHOTO_SKIP = 1;
-
+export const bunchOfRelations: Prisma.PhotoInclude = {
+  User: true,
+  UserLikes: true,
+  CustomTags: true,
+  Files: true,
+};
 @Injectable()
 export class PhotoService {
   constructor(private readonly prisma: PrismaService) {}
-
-  private readonly bunchOfRelations: Prisma.PhotoInclude = {
-    User: true,
-    UserLikes: true,
-    CustomTags: true,
-    Files: true,
-  };
 
   async createPhoto(
     data: CreatePhotoInput,
@@ -33,7 +31,7 @@ export class PhotoService {
 
     const photo = await this.prisma.photo.create({
       data: { user_id: user.id, slug, ...data },
-      include: this.bunchOfRelations,
+      include: bunchOfRelations,
     });
 
     return photo;
@@ -42,7 +40,7 @@ export class PhotoService {
   async getPhotoBySlug(slug: string): Promise<Partial<PhotoOutputDto>> {
     const photo = await PhotoModel({ slug });
 
-    if (!photo.exists) {
+    if (!photo.exists || photo.isDeleted()) {
       throw new HttpException('Not Exists', 404);
     }
 
@@ -51,24 +49,32 @@ export class PhotoService {
 
   async getUserPhotos(
     user: Partial<User>,
-    { cursor }: PaginationOptions,
-  ): Promise<PhotoOutputDto[]> {
+    { take, skip, page }: PaginationOptions,
+  ): Promise<PhotosWithPaginationDto> {
+    const where = { deleted_at: null, user_id: user.id };
     const photos = await this.getManyPhotos(
-      { deleted_at: null, user_id: user.id },
-      { cursor },
-      this.bunchOfRelations,
+      where,
+      { take, skip },
+      bunchOfRelations,
     );
 
-    return photos;
+    if (!photos?.length) {
+      throw new HttpException('No Data', 203);
+    }
+
+    const meta = await this.createMetaObject(photos, where, page, take);
+
+    return { items: photos, meta };
   }
 
   async getPhotos({
-    cursor,
+    take,
+    skip,
   }: PaginationOptions): Promise<Partial<PhotoOutputDto[]>> {
     const photos = await this.getManyPhotos(
       { deleted_at: null },
-      { cursor },
-      this.bunchOfRelations,
+      { take, skip },
+      bunchOfRelations,
     );
 
     return photos;
@@ -76,7 +82,7 @@ export class PhotoService {
 
   async getLikedPhotos(
     user: Partial<User>,
-    { cursor }: PaginationOptions,
+    { take, skip }: PaginationOptions,
   ): Promise<Partial<PhotoOutputDto[]>> {
     const photos = await this.getManyPhotos(
       {
@@ -88,8 +94,8 @@ export class PhotoService {
           },
         },
       },
-      { cursor },
-      this.bunchOfRelations,
+      { take, skip },
+      bunchOfRelations,
     );
 
     return photos;
@@ -131,15 +137,12 @@ export class PhotoService {
 
   private async getManyPhotos(
     where: Prisma.PhotoWhereInput,
-    { cursor }: PaginationOptions,
+    { take, skip }: PaginationOptions,
     relations: Prisma.PhotoInclude,
   ): Promise<PhotoOutputDto[]> {
     const photos = await this.prisma.photo.findMany({
-      take: PHOTO_TAKE,
-      skip: PHOTO_SKIP,
-      cursor: {
-        id: cursor,
-      },
+      take,
+      skip,
       include: relations,
       where,
       orderBy: {
@@ -148,5 +151,28 @@ export class PhotoService {
     });
 
     return photos;
+  }
+
+  private async countPhotos(where: Prisma.PhotoWhereInput): Promise<number> {
+    return await this.prisma.photo.count({ where });
+  }
+
+  private async createMetaObject(
+    photos: PhotoOutputDto[],
+    where: Prisma.PhotoWhereInput,
+    page: number,
+    take: number,
+  ): Promise<MetaPagination> {
+    const totalItems = await this.countPhotos(where);
+    const itemCount = photos?.length;
+    const totalPages = Math.round(totalItems / take);
+    const currentPage = page;
+
+    return {
+      totalItems,
+      itemCount,
+      totalPages,
+      currentPage,
+    };
   }
 }

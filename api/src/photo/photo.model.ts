@@ -7,6 +7,7 @@ import {
   File,
   Tags,
 } from '@prisma/client';
+import { bunchOfRelations } from './photo.service';
 
 interface PhotoInterface extends Photo {
   isDeleted: () => boolean;
@@ -56,7 +57,7 @@ export async function PhotoModel(
     delete: async () => {
       const res = await prisma.photo.update({
         where: { id: photo.id },
-        data: { deleted_at: Date() },
+        data: { deleted_at: new Date().toISOString() },
       });
 
       return !!res;
@@ -65,6 +66,7 @@ export async function PhotoModel(
       const updatedPhoto = await prisma.photo.update({
         where: { id: photo.id },
         data,
+        include: bunchOfRelations,
       });
 
       return updatedPhoto;
