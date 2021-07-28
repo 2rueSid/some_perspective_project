@@ -36,6 +36,18 @@ export class PhotoOutputDto extends PickType(CreatePhotoInput, [
 }
 
 @InputType()
+export class UpdatePhotoInput {
+  @Field()
+  slug: string;
+
+  @Field({ nullable: true })
+  title?: string;
+
+  @Field({ nullable: true })
+  description?: string;
+}
+
+@InputType()
 export class PaginationOptions {
   cursor: number;
 }

@@ -7,6 +7,7 @@ import {
   DeletePhotoInput,
   PaginationOptions,
   PhotoOutputDto,
+  UpdatePhotoInput,
 } from './photo.dto';
 import { PhotoModel } from './photo.model';
 
@@ -110,7 +111,22 @@ export class PhotoService {
     return photo.delete();
   }
 
-  asyn
+  async updatePhoto(
+    { slug, ...data }: UpdatePhotoInput,
+    user: Partial<User>,
+  ): Promise<PhotoOutputDto> {
+    const photo = await PhotoModel({ slug });
+
+    if (!photo.exists && !photo.isDeleted) {
+      throw new HttpException('Phono not exists', 404);
+    }
+
+    if (!photo.isOwner(user.id)) {
+      throw new HttpException('Not permitted', 405);
+    }
+
+    return await photo.update(data);
+  }
 
   private async getManyPhotos(
     where: Prisma.PhotoWhereInput,
@@ -133,14 +149,3 @@ export class PhotoService {
     return photos;
   }
 }
-
-// GRUD
-/*
-  Create photo
-  Get photo
-  Get user photos
-  Get Photos
-  Get user liked photos
-  Update photo
-  Delete photo
-*/
