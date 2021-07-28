@@ -70,35 +70,51 @@ export class PhotoService {
   async getPhotos({
     take,
     skip,
-  }: PaginationOptions): Promise<Partial<PhotoOutputDto[]>> {
+    page,
+  }: PaginationOptions): Promise<PhotosWithPaginationDto> {
+    const where = { deleted_at: null };
     const photos = await this.getManyPhotos(
-      { deleted_at: null },
+      where,
       { take, skip },
       bunchOfRelations,
     );
 
-    return photos;
+    if (!photos?.length) {
+      throw new HttpException('No Data', 203);
+    }
+
+    const meta = await this.createMetaObject(photos, where, page, take);
+
+    return { items: photos, meta };
   }
 
   async getLikedPhotos(
     user: Partial<User>,
-    { take, skip }: PaginationOptions,
-  ): Promise<Partial<PhotoOutputDto[]>> {
-    const photos = await this.getManyPhotos(
-      {
-        deleted_at: null,
-        UserLikes: {
-          every: {
-            user_id: user.id,
-            is_liked: true,
-          },
+    { take, skip, page }: PaginationOptions,
+  ): Promise<PhotosWithPaginationDto> {
+    const where: Prisma.PhotoWhereInput = {
+      deleted_at: null,
+      UserLikes: {
+        some: {
+          user_id: user.id,
+          is_liked: true,
         },
       },
+    };
+
+    const photos = await this.getManyPhotos(
+      where,
       { take, skip },
       bunchOfRelations,
     );
 
-    return photos;
+    if (!photos?.length) {
+      throw new HttpException('No Data', 203);
+    }
+
+    const meta = await this.createMetaObject(photos, where, page, take);
+
+    return { items: photos, meta };
   }
 
   async deletePhoto(

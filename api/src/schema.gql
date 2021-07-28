@@ -93,9 +93,9 @@ type PhotosWithPaginationDto {
 }
 
 type Query {
-  getLikedPhotos(paginationOptions: PaginationOptions!): [PhotoOutputDto!]!
+  getLikedPhotos(paginationOptions: PaginationOptions!): PhotosWithPaginationDto!
   getPhotoBySlug(photoSlug: String!): PhotoOutputDto!
-  getPhotos(paginationOptions: PaginationOptions!): [PhotoOutputDto!]!
+  getPhotos(paginationOptions: PaginationOptions!): PhotosWithPaginationDto!
   getUserPhotos(paginationOptions: PaginationOptions!): PhotosWithPaginationDto!
   sayHello: String!
 }

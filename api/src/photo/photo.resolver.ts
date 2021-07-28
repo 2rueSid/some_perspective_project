@@ -64,21 +64,21 @@ export class PhotoResolver {
     return await this.photoService.getUserPhotos(user, pagination);
   }
 
-  @Query(() => [PhotoOutputDto])
+  @Query(() => PhotosWithPaginationDto)
   async getPhotos(
     @Args({ name: 'paginationOptions', type: () => PaginationOptions })
     pagination: PaginationOptions,
-  ): Promise<Partial<PhotoOutputDto[]>> {
+  ): Promise<Partial<PhotosWithPaginationDto>> {
     return await this.photoService.getPhotos(pagination);
   }
 
-  @Query(() => [PhotoOutputDto])
+  @Query(() => PhotosWithPaginationDto)
   @UseGuards(GqlAuthGuard)
   async getLikedPhotos(
     @Args({ name: 'paginationOptions', type: () => PaginationOptions })
     pagination: PaginationOptions,
     @CurrentUser() user: Partial<User>,
-  ): Promise<Partial<PhotoOutputDto[]>> {
+  ): Promise<Partial<PhotosWithPaginationDto>> {
     return await this.photoService.getLikedPhotos(user, pagination);
   }
 }
