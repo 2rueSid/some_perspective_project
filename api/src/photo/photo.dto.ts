@@ -1,5 +1,8 @@
 import { Field, InputType, ObjectType, PickType } from '@nestjs/graphql';
-import { File, Tags, User, UserLikes } from '@prisma/client';
+import { FileGraphQL } from 'src/file/file.dto';
+import { TagsGraphQL } from 'src/tags/tags.dto';
+import { UserGraphQL } from 'src/user/user.dto';
+import { UserLikesGraphQL } from 'src/user_likes/user_likes.dto';
 
 @InputType()
 export class CreatePhotoInput {
@@ -22,17 +25,17 @@ export class PhotoOutputDto extends PickType(CreatePhotoInput, [
   @Field({ nullable: true })
   deleted_at?: Date;
 
-  @Field()
-  User?: User;
+  @Field(() => UserGraphQL)
+  User?: UserGraphQL;
 
-  @Field({ nullable: true })
-  Files?: File[];
+  @Field(() => [FileGraphQL], { nullable: true })
+  Files?: FileGraphQL[];
 
-  @Field({ nullable: true })
-  UserLikes?: UserLikes[];
+  @Field(() => [UserLikesGraphQL], { nullable: true })
+  UserLikes?: UserLikesGraphQL[];
 
-  @Field({ nullable: true })
-  Tags?: Tags[];
+  @Field(() => [TagsGraphQL], { nullable: true })
+  Tags?: TagsGraphQL[];
 }
 
 @InputType()
@@ -49,6 +52,7 @@ export class UpdatePhotoInput {
 
 @InputType()
 export class PaginationOptions {
+  @Field()
   cursor: number;
 }
 
@@ -56,4 +60,24 @@ export class PaginationOptions {
 export class DeletePhotoInput {
   @Field()
   slug: string;
+}
+
+@ObjectType()
+export class PhotoGraphQL {
+  @Field()
+  id?: number;
+  @Field()
+  title?: string;
+  @Field()
+  slug?: string;
+  @Field()
+  description?: string | null;
+  @Field()
+  user_id?: number;
+  @Field()
+  deleted_at?: Date | null;
+  @Field()
+  created_at?: Date;
+  @Field()
+  updated_at?: Date;
 }

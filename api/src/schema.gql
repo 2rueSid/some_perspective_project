@@ -6,20 +6,79 @@ input ActivateUserInput {
   activate_token: String!
 }
 
+input CreatePhotoInput {
+  description: String!
+  title: String!
+  user_id: Float
+}
+
 input CreateResetToken {
   email: String!
 }
 
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+input DeletePhotoInput {
+  slug: String!
+}
+
+type FileGraphQL {
+  created_at: DateTime!
+  download: String!
+  extension: String!
+  id: Float!
+  name: String!
+  originalname: String!
+  photo_id: Float!
+  size: Float!
+  type: String!
+  updated_at: DateTime!
+  user_id: Float!
+}
+
 type Mutation {
   activateUserAccount(activateAccount: ActivateUserInput!): UserOutputDto!
+  createPhoto(createPhotoArgs: CreatePhotoInput!): PhotoOutputDto!
   createResetToken(userEmail: CreateResetToken!): ResetPasswordTokenDto!
+  deletePhoto(deletePhoto: DeletePhotoInput!): Boolean!
   resetPassword(resetPassword: ResetUserPassword!): UserOutputDto!
   setUserReaction(userReaction: UserReactionInput!): Boolean!
   signUp(signUpInput: UserSignUpInput!): UserOutputDto!
   singIn(signInInput: UserSignInInput!): UserOutputDto!
+  updatePhoto(updatePhotoArgs: UpdatePhotoInput!): PhotoOutputDto!
+}
+
+input PaginationOptions {
+  cursor: Float!
+}
+
+type PhotoGraphQL {
+  created_at: DateTime!
+  deleted_at: DateTime!
+  description: String!
+  id: Float!
+  slug: String!
+  title: String!
+  updated_at: DateTime!
+  user_id: Float!
+}
+
+type PhotoOutputDto {
+  Files: [FileGraphQL!]
+  Tags: [TagsGraphQL!]
+  User: UserGraphQL!
+  UserLikes: [UserLikesGraphQL!]
+  deleted_at: DateTime
 }
 
 type Query {
+  getLikedPhotos(paginationOptions: PaginationOptions!): [PhotoOutputDto!]!
+  getPhotoBySlug(photoSlug: String!): PhotoOutputDto!
+  getPhotos(paginationOptions: PaginationOptions!): [PhotoOutputDto!]!
+  getUserPhotos(paginationOptions: PaginationOptions!): [PhotoOutputDto!]!
   sayHello: String!
 }
 
@@ -30,6 +89,49 @@ type ResetPasswordTokenDto {
 input ResetUserPassword {
   password: String!
   reset_token: String!
+}
+
+type TagsGraphQL {
+  created_at: DateTime!
+  description: String!
+  id: Float!
+  name: String!
+  photo_id: Float!
+  updated_at: DateTime!
+  user_id: Float!
+}
+
+input UpdatePhotoInput {
+  description: String
+  slug: String!
+  title: String
+}
+
+type UserGraphQL {
+  avatar_id: Float!
+  created_at: DateTime!
+  deleted_at: DateTime!
+  email: String!
+  first_name: String!
+  id: Float!
+  is_active: Boolean!
+  is_disabled: Boolean!
+  last_name: String!
+  password: String!
+  role: String!
+  send_emails: Boolean!
+  slug: String!
+  updated_at: DateTime!
+}
+
+type UserLikesGraphQL {
+  created_at: DateTime!
+  id: Float!
+  is_disliked: Boolean!
+  is_liked: Boolean!
+  photo_id: Float!
+  updated_at: DateTime!
+  user_id: Float!
 }
 
 type UserOutputDto {
