@@ -1,5 +1,5 @@
 import { HttpException, Injectable } from '@nestjs/common';
-import { Photo, User } from '@prisma/client';
+import { Photo, Prisma, User } from '@prisma/client';
 import { PrismaService } from 'src/prisma_client/prisma.service';
 import { generateSlug } from 'src/utils/generate_slug';
 import {
@@ -15,6 +15,13 @@ export const PHOTO_SKIP = 1;
 @Injectable()
 export class PhotoService {
   constructor(private readonly prisma: PrismaService) {}
+
+  private readonly bunchOfRelations: Prisma.PhotoInclude = {
+    User: true,
+    UserLikes: true,
+    CustomTags: true,
+    Files: true,
+  };
 
   async createPhoto(
     data: CreatePhotoInput,
@@ -43,22 +50,61 @@ export class PhotoService {
     user: Partial<User>,
     { cursor }: PaginationOptions,
   ): Promise<PhotoOutputDto[]> {
+    const photos = await this.getManyPhotos(
+      { deleted_at: null, user_id: user.id },
+      { cursor },
+      this.bunchOfRelations,
+    );
+
+    return photos;
+  }
+
+  async getPhotos({
+    cursor,
+  }: PaginationOptions): Promise<Partial<PhotoOutputDto[]>> {
+    const photos = await this.getManyPhotos(
+      { deleted_at: null },
+      { cursor },
+      this.bunchOfRelations,
+    );
+
+    return photos;
+  }
+
+  async getLikedPhotos(
+    user: Partial<User>,
+    { cursor }: PaginationOptions,
+  ): Promise<Partial<PhotoOutputDto[]>> {
+    const photos = await this.getManyPhotos(
+      {
+        deleted_at: null,
+        UserLikes: {
+          every: {
+            user_id: user.id,
+            is_liked: true,
+          },
+        },
+      },
+      { cursor },
+      this.bunchOfRelations,
+    );
+
+    return photos;
+  }
+
+  private async getManyPhotos(
+    where: Prisma.PhotoWhereInput,
+    { cursor }: PaginationOptions,
+    relations: Prisma.PhotoInclude,
+  ): Promise<PhotoOutputDto[]> {
     const photos = await this.prisma.photo.findMany({
       take: PHOTO_TAKE,
       skip: PHOTO_SKIP,
       cursor: {
         id: cursor,
       },
-      include: {
-        User: true,
-        UserLikes: true,
-        CustomTags: true,
-        Files: true,
-      },
-      where: {
-        user_id: user.id,
-        deleted_at: null,
-      },
+      include: relations,
+      where,
       orderBy: {
         created_at: 'desc',
       },

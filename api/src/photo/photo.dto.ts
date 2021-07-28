@@ -23,7 +23,7 @@ export class PhotoOutputDto extends PickType(CreatePhotoInput, [
   deleted_at?: Date;
 
   @Field()
-  User: User;
+  User?: User;
 
   @Field({ nullable: true })
   Files?: File[];

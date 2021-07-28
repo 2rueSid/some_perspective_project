@@ -17,7 +17,7 @@ interface PhotoInterface extends Photo {
   CustomTags?: Tags[];
 }
 
-export const photosWithRelations = Prisma.validator<Prisma.PhotoArgs>()({
+export const PhotosWithRelations = Prisma.validator<Prisma.PhotoArgs>()({
   include: {
     User: true,
     UserLikes: true,
@@ -27,11 +27,11 @@ export const photosWithRelations = Prisma.validator<Prisma.PhotoArgs>()({
 });
 
 export async function PhotoModel(
-  where: Prisma.UserWhereUniqueInput,
+  where: Prisma.PhotoWhereUniqueInput,
 ): Promise<PhotoInterface> {
   const prisma: PrismaClient = new PrismaClient();
 
-  const photo: Prisma.PhotoGetPayload<typeof photosWithRelations> =
+  const photo: Prisma.PhotoGetPayload<typeof PhotosWithRelations> =
     await prisma.photo.findUnique({
       where,
       include: {
