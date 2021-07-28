@@ -17,11 +17,16 @@ export class CreatePhotoInput {
 }
 
 @ObjectType()
-export class PhotoOutputDto extends PickType(CreatePhotoInput, [
-  'description',
-  'title',
-  'user_id',
-] as const) {
+export class PhotoOutputDto {
+  @Field()
+  title: string;
+
+  @Field()
+  description: string;
+
+  @Field({ nullable: true })
+  user_id?: number;
+
   @Field({ nullable: true })
   deleted_at?: Date;
 

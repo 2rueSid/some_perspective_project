@@ -72,6 +72,9 @@ type PhotoOutputDto {
   User: UserGraphQL!
   UserLikes: [UserLikesGraphQL!]
   deleted_at: DateTime
+  description: String!
+  title: String!
+  user_id: Float
 }
 
 type Query {

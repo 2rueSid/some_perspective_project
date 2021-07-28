@@ -33,6 +33,7 @@ export class PhotoService {
 
     const photo = await this.prisma.photo.create({
       data: { user_id: user.id, slug, ...data },
+      include: this.bunchOfRelations,
     });
 
     return photo;
