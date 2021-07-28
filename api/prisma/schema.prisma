@@ -108,8 +108,11 @@ model UserLikes {
   created_at  DateTime @default(now())
   updated_at  DateTime @default(now())
 
+
   User  User  @relation(fields: [user_id], references: [id])
   Photo Photo @relation(fields: [photo_id], references: [id])
+
+  @@unique([user_id, photo_id])
 }
 
 enum Role {
