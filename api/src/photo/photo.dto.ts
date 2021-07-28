@@ -20,7 +20,7 @@ export class PhotoOutputDto extends PickType(CreatePhotoInput, [
   'user_id',
 ] as const) {
   @Field({ nullable: true })
-  deleted_at?: string;
+  deleted_at?: Date;
 
   @Field()
   User: User;
@@ -33,4 +33,9 @@ export class PhotoOutputDto extends PickType(CreatePhotoInput, [
 
   @Field({ nullable: true })
   Tags?: Tags[];
+}
+
+@InputType()
+export class PaginationOptions {
+  cursor: number;
 }

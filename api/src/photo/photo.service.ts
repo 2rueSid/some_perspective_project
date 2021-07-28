@@ -1,8 +1,16 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { Photo, User } from '@prisma/client';
 import { PrismaService } from 'src/prisma_client/prisma.service';
 import { generateSlug } from 'src/utils/generate_slug';
-import { CreatePhotoInput } from './photo.dto';
+import {
+  CreatePhotoInput,
+  PaginationOptions,
+  PhotoOutputDto,
+} from './photo.dto';
+import { PhotoModel } from './photo.model';
+
+export const PHOTO_TAKE = 20;
+export const PHOTO_SKIP = 1;
 
 @Injectable()
 export class PhotoService {
@@ -21,7 +29,43 @@ export class PhotoService {
     return photo;
   }
 
-  
+  async getPhotoBySlug(slug: string): Promise<Partial<PhotoOutputDto>> {
+    const photo = await PhotoModel({ slug });
+
+    if (!photo.exists) {
+      throw new HttpException('Not Exists', 404);
+    }
+
+    return photo;
+  }
+
+  async getUserPhotos(
+    user: Partial<User>,
+    { cursor }: PaginationOptions,
+  ): Promise<PhotoOutputDto[]> {
+    const photos = await this.prisma.photo.findMany({
+      take: PHOTO_TAKE,
+      skip: PHOTO_SKIP,
+      cursor: {
+        id: cursor,
+      },
+      include: {
+        User: true,
+        UserLikes: true,
+        CustomTags: true,
+        Files: true,
+      },
+      where: {
+        user_id: user.id,
+        deleted_at: null,
+      },
+      orderBy: {
+        created_at: 'desc',
+      },
+    });
+
+    return photos;
+  }
 }
 
 // GRUD
