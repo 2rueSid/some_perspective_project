@@ -9,3 +9,11 @@ export class GqlAuthGuard extends AuthGuard('jwt') {
     return ctx.getContext().req;
   }
 }
+
+@Injectable()
+export class RestAuthGuard extends AuthGuard('jwt') {
+  getRequest(context: ExecutionContext) {
+    const request = context.switchToHttp().getRequest();
+    return request;
+  }
+}

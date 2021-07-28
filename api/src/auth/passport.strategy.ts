@@ -11,7 +11,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(private readonly configService: ConfigService) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      secretOrKey: configService.get('JWT_TOKEN'),
+      secretOrKey: process.env.JWT_SECRET,
       passReqToCallback: true,
     });
   }
@@ -19,7 +19,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   async validate(req, user: Partial<User>) {
     const token = req.headers.authorization.slice(7);
 
-    const tokenExists = (await TokenModel(token)).is_valid();
+    const tokenExists = (await TokenModel({ token })).is_valid();
+
     if (tokenExists) {
       return user;
     } else {

@@ -15,7 +15,7 @@ export async function TokenModel(
   const token: UserTokens = await prisma.userTokens.findUnique({
     where,
     include: {
-      user: true,
+      User: true,
     },
   });
 
