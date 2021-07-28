@@ -9,6 +9,9 @@ import {
   Inject,
   Logger,
   Body,
+  Get,
+  Param,
+  Res,
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { User } from '@prisma/client';
@@ -20,19 +23,19 @@ import { updateFileName } from 'src/utils/upload_files';
 import { FileOutput } from './file.dto';
 import { FileService } from './file.service';
 
-export const MAX_FILES = 5;
+export const MAX_FILES = 15;
 
-@Controller('upload')
+@Controller('files')
 export class FileController {
   constructor(
     private readonly fileService: FileService,
     @Inject(Logger) private readonly logger: LoggerService,
   ) {}
 
-  @Post('/files')
+  @Post('/upload')
   @UseGuards(RestAuthGuard)
   @UseInterceptors(
-    FilesInterceptor('files', 16, {
+    FilesInterceptor('files', MAX_FILES, {
       storage: diskStorage({
         destination: join(__dirname, '../../uploads'),
         filename: updateFileName,
@@ -49,5 +52,11 @@ export class FileController {
     }
 
     return await this.fileService.uploadFiles(uploadedFiles, currentUser, body);
+  }
+
+  @Get('/:file_path')
+  @UseGuards(RestAuthGuard)
+  async sendUploadedFile(@Param('file_path') filePath, @Res() res) {
+    return res.sendFile(filePath, { root: join(__dirname, '../../uploads/') });
   }
 }
