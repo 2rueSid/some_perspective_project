@@ -6,6 +6,8 @@ import { PrismaModule } from './prisma_client/prisma.module';
 import { configModule } from './config.module';
 import { TokenModule } from './token/token.module';
 import { FileModule } from './file/file.module';
+import { UserLikesModule } from './user_likes/user_likes.module';
+import { PhotoModule } from './photo/photo.module';
 
 @Module({
   imports: [
@@ -19,6 +21,8 @@ import { FileModule } from './file/file.module';
     configModule,
     TokenModule,
     FileModule,
+    UserLikesModule,
+    PhotoModule,
   ],
 })
 export class AppModule {}
