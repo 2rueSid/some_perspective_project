@@ -13,6 +13,7 @@ import {
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { User } from '@prisma/client';
 import { diskStorage } from 'multer';
+import { join } from 'path';
 import { RestAuthGuard } from 'src/auth/auth.gaurd';
 import { RestCurrentUser } from 'src/user/current_user.decorator';
 import { updateFileName } from 'src/utils/upload_files';
@@ -33,7 +34,7 @@ export class FileController {
   @UseInterceptors(
     FilesInterceptor('files', 16, {
       storage: diskStorage({
-        destination: '/uploads',
+        destination: join(__dirname, '../../uploads'),
         filename: updateFileName,
       }),
     }),
@@ -42,7 +43,7 @@ export class FileController {
     @UploadedFiles() uploadedFiles,
     @RestCurrentUser() currentUser: Partial<User>,
     @Body() body: Partial<FileOutput>,
-  ): Promise<boolean> {
+  ): Promise<FileOutput[]> {
     if (uploadedFiles?.length > MAX_FILES || !uploadedFiles?.length) {
       throw new NotAcceptableException();
     }

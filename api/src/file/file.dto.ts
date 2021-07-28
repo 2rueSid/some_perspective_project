@@ -7,7 +7,7 @@ export class FileOutput {
   id: number;
 
   @Field()
-  original_name: string;
+  originalname: string;
 
   @Field()
   size: number;
