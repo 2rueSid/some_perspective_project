@@ -9,8 +9,8 @@ export class CreatePhotoInput {
   @Field()
   description: string;
 
-  @Field()
-  user_id: number;
+  @Field({ nullable: true })
+  user_id?: number;
 }
 
 @ObjectType()

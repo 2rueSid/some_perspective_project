@@ -1,7 +1,6 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { addDays } from 'date-fns';
 import { TokenTypes, User } from '@prisma/client';
-import * as cryptoRandomString from 'crypto-random-string';
 import * as bcrypt from 'bcrypt';
 
 import { PrismaService } from 'src/prisma_client/prisma.service';
@@ -18,6 +17,7 @@ import {
 import { TokenService } from 'src/token/token.service';
 import { JwtService } from '@nestjs/jwt';
 import { TokenModel } from 'src/token/token.model';
+import { generateSlug } from 'src/utils/generate_slug';
 
 @Injectable()
 export class AuthService {
@@ -37,7 +37,7 @@ export class AuthService {
 
     if (user.exists) throw new HttpException('User already exists', 401);
 
-    const slug = await this.generateSlug(6);
+    const slug = await generateSlug(6);
     const hashedPassword = await this.hashPassword(password);
 
     const createdUser = await this.prisma.user.create({
@@ -148,13 +148,6 @@ export class AuthService {
     await this.tokenService.createJwtToken(token, user.id, expiresAt);
 
     return { authorization_token: token, ...user };
-  }
-
-  private async generateSlug(length: number, type?): Promise<string> {
-    return await cryptoRandomString({
-      length: length,
-      type: type ? type : 'url-safe',
-    });
   }
 
   private async hashPassword(password: string): Promise<string> {

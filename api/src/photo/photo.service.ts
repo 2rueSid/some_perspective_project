@@ -1,14 +1,27 @@
 import { Injectable } from '@nestjs/common';
-import { Photo } from '@prisma/client';
+import { Photo, User } from '@prisma/client';
 import { PrismaService } from 'src/prisma_client/prisma.service';
+import { generateSlug } from 'src/utils/generate_slug';
+import { CreatePhotoInput } from './photo.dto';
 
 @Injectable()
 export class PhotoService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async createPhoto(): Promise<Photo> {
-    
+  async createPhoto(
+    data: CreatePhotoInput,
+    user: Partial<User>,
+  ): Promise<Photo> {
+    const slug = await generateSlug(6);
+
+    const photo = await this.prisma.photo.create({
+      data: { user_id: user.id, slug, ...data },
+    });
+
+    return photo;
   }
+
+  
 }
 
 // GRUD
