@@ -39,3 +39,9 @@ export class PhotoOutputDto extends PickType(CreatePhotoInput, [
 export class PaginationOptions {
   cursor: number;
 }
+
+@InputType()
+export class DeletePhotoInput {
+  @Field()
+  slug: string;
+}

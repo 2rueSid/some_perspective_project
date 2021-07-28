@@ -10,6 +10,8 @@ import {
 
 interface PhotoInterface extends Photo {
   isDeleted: () => boolean;
+  isOwner: (userId: number) => boolean;
+  delete: () => boolean;
   exists: boolean;
   User: User;
   UserLikes?: UserLikes[];
@@ -45,6 +47,18 @@ export async function PhotoModel(
   return {
     isDeleted: () => {
       return !!photo.deleted_at;
+    },
+    isOwner: (userId: number) => {
+      if (photo.user_id === userId) return true;
+      return false;
+    },
+    delete: () => {
+      const res = prisma.photo.update({
+        where: { id: photo.id },
+        data: { deleted_at: Date() },
+      });
+
+      return !!res;
     },
     exists: !!photo,
     ...photo,

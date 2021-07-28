@@ -4,6 +4,7 @@ import { PrismaService } from 'src/prisma_client/prisma.service';
 import { generateSlug } from 'src/utils/generate_slug';
 import {
   CreatePhotoInput,
+  DeletePhotoInput,
   PaginationOptions,
   PhotoOutputDto,
 } from './photo.dto';
@@ -91,6 +92,25 @@ export class PhotoService {
 
     return photos;
   }
+
+  async deletePhoto(
+    { slug }: DeletePhotoInput,
+    user: Partial<User>,
+  ): Promise<boolean> {
+    const photo = await PhotoModel({ slug });
+
+    if (!photo.exists) {
+      throw new HttpException('Phono not exists', 404);
+    }
+
+    if (!photo.isOwner(user.id)) {
+      throw new HttpException('Not permitted', 405);
+    }
+
+    return photo.delete();
+  }
+
+  asyn
 
   private async getManyPhotos(
     where: Prisma.PhotoWhereInput,
