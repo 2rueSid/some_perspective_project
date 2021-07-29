@@ -26,12 +26,14 @@ model User {
   created_at  DateTime  @default(now())
   updated_at  DateTime  @default(now())
 
-  UserTokens UserTokens[]
-  File       File[]
-  Photo      Photo[]
-  Tags       Tags[]
-  UserLikes  UserLikes[]
+  UserTokens    UserTokens[]
+  File          File[]
+  Photo         Photo[]
+  Tags          Tags[]
+  UserLikes     UserLikes[]
+  PhotoComments PhotoComments[]
 
+  CommentReactions CommentReactions[]
   @@unique([email, slug])
   @@map("users")
 }
@@ -60,12 +62,62 @@ model Photo {
   created_at  DateTime  @default(now())
   updated_at  DateTime  @default(now())
 
-  User       User        @relation(fields: [user_id], references: [id])
-  Files      File[]
-  CustomTags Tags[]
-  UserLikes  UserLikes[]
+  User          User            @relation(fields: [user_id], references: [id])
+  Files         File[]
+  CustomTags    Tags[]
+  UserLikes     UserLikes[]
+  PhotoComments PhotoComments[]
 
   @@map("photos")
+}
+
+model PhotoComments {
+  id         Int       @id @default(autoincrement())
+  comment    String
+  photo_id   Int
+  user_id    Int
+  is_edited  Boolean?  @default(false)
+  is_seen    Boolean?  @default(false)
+  deleted_at DateTime?
+  created_at DateTime  @default(now())
+  updated_at DateTime  @default(now())
+
+  User  User  @relation(fields: [user_id], references: [id])
+  Photo Photo @relation(fields: [photo_id], references: [id])
+
+
+  CommentReplies   CommentReplies[]
+  CommentReactions CommentReactions[]
+  @@map("photo_comments")
+}
+
+model CommentReplies {
+  id         Int      @id @default(autoincrement())
+  comment_id Int
+  reply_to   Int
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now())
+
+  Comment PhotoComments @relation(fields: [comment_id], references: [id])
+
+  @@map("comments_replies")
+}
+
+model CommentReactions {
+  id          Int      @id @default(autoincrement())
+  comment_id  Int
+  user_id     Int
+  is_liked    Boolean
+  is_disliked Boolean
+  created_at  DateTime @default(now())
+  updated_at  DateTime @default(now())
+
+  Comment PhotoComments @relation(fields: [comment_id], references: [id])
+  User    User          @relation(fields: [user_id], references: [id])
+
+
+  @@unique([user_id, comment_id])
+  @@map("comment_reactions")
 }
 
 model File {
