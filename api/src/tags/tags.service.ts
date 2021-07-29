@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { Tags, User } from '@prisma/client';
 import { PrismaService } from 'src/prisma_client/prisma.service';
-import { CreateTagsInput, TagsOutputDto } from './tags.dto';
+import { CreateTagsInput, DeleteTagInput, TagsOutputDto } from './tags.dto';
+import { TagsModel } from './tags.model';
 
 @Injectable()
 export class TagsService {
@@ -18,19 +19,30 @@ export class TagsService {
     return tag;
   }
 
-  // async updateTag(
-  //   user: Partial<User>,
-  //   data: Partial<CreateTagsInput>,
-  // ): Promise<Partial<TagsOutputDto>> {
+  async deleteTag(
+    { id: userId }: Partial<User>,
+    { id }: DeleteTagInput,
+  ): Promise<boolean> {
+    const tag = await TagsModel({ id });
 
-  // }
+    if (!tag.exists) {
+      throw new HttpException('Not Exists', 404);
+    }
+
+    if (!tag.isOwner(userId)) {
+      throw new HttpException('Permission denied', 405);
+    }
+
+    return tag.delete();
+  }
+
+
 }
 
 /*
   create
-  update by user_id
   delete by user_id
-  get all 
   get by photo id
   get by user_id
+  get by name
 */

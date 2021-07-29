@@ -1,7 +1,8 @@
 import { PrismaClient, Prisma, User, File, Tags } from '@prisma/client';
 
 interface TagsInterface extends Tags {
-  update: (data: Prisma.TagsUpdateInput) => Promise<Tags>;
+  delete: () => Promise<boolean>;
+  isOwner: (user_id: number) => boolean;
   exists: boolean;
   User: User;
   Files?: File[];
@@ -29,13 +30,17 @@ export async function TagsModel(
     });
 
   return {
-    update: async (data) => {
-      const updatedPhoto = await prisma.tags.update({
-        where: { id: tag.id },
-        data,
+    delete: async () => {
+      const res = await prisma.tags.delete({
+        where: {
+          id: tag.id,
+        },
       });
 
-      return updatedPhoto;
+      return !!res;
+    },
+    isOwner: (userId) => {
+      return tag.user_id === userId;
     },
     exists: !!tag,
     ...tag,

@@ -51,3 +51,8 @@ export class CreateTagsInput {
   @Field()
   photo_id?: number;
 }
+
+@InputType()
+export class DeleteTagInput {
+  id: number;
+}
