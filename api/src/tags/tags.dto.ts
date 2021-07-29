@@ -54,5 +54,6 @@ export class CreateTagsInput {
 
 @InputType()
 export class DeleteTagInput {
+  @Field()
   id: number;
 }

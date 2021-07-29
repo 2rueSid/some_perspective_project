@@ -38,10 +38,11 @@ export class TagsResolver {
   }
 
   @Query(() => [TagsOutputDto])
+  @UseGuards(GqlAuthGuard)
   async getTagsByUserId(
-    @Args('userId') userId: number,
+    @CurrentUser() user: Partial<User>,
   ): Promise<TagsOutputDto[]> {
-    return await this.tagsService.getTagsByUserId(userId);
+    return await this.tagsService.getTagsByUserId(user.id);
   }
 
   @Query(() => [TagsOutputDto])
