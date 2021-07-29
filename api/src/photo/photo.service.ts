@@ -35,11 +35,13 @@ export class PhotoService {
 
     const photo = await this.prisma.photo.create({
       data: { user_id: user.id, slug, ...data },
-      include: bunchOfRelations,
+      include: {
+        User: true,
+      },
     });
 
     await this.searchService.addPhotoToSearchableTable({
-      searchable: `${photo.title} ${photo?.description}`,
+      searchable: `${photo.title} ${photo?.description} ${photo.User.first_name} ${photo.User.last_name}`,
       searchable_id: photo.id,
     });
 

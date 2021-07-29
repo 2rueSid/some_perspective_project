@@ -1,5 +1,5 @@
 import { HttpException, Injectable } from '@nestjs/common';
-import { SearchType, User } from '@prisma/client';
+import { Photo, SearchType, User } from '@prisma/client';
 import { PrismaService } from 'src/prisma_client/prisma.service';
 import {
   AddPhotoToSearchableInput,
@@ -21,26 +21,41 @@ export class SearchService {
       select: {
         searchable_id: true,
       },
-      orderBy: {
-        created_at: 'desc',
-      },
     });
-
-    if (!searchResults?.length) {
-      throw new HttpException('Not Found', 404);
-    }
-
-    const mappedIds = searchResults.map((v) => v.searchable_id);
 
     const users = await this.prisma.user.findMany({
       where: {
         id: {
-          in: mappedIds,
+          in: await this.checkAndMapArray(searchResults),
         },
       },
     });
 
     return await users;
+  }
+
+  async searchPhoto(searchable: string): Promise<Photo[]> {
+    const searchResults = await this.prisma.search.findMany({
+      where: {
+        searchable: {
+          contains: searchable,
+        },
+        type: SearchType.PHOTO,
+      },
+      select: {
+        searchable_id: true,
+      },
+    });
+
+    const photos = await this.prisma.photo.findMany({
+      where: {
+        id: {
+          in: await this.checkAndMapArray(searchResults),
+        },
+      },
+    });
+
+    return photos;
   }
 
   async addPhotoToSearchableTable(
@@ -80,6 +95,18 @@ export class SearchService {
         },
       },
     }));
+  }
+
+  private async checkAndMapArray(
+    searchResults: {
+      searchable_id: number;
+    }[],
+  ): Promise<number[]> {
+    if (!searchResults?.length) {
+      throw new HttpException('Not Found', 404);
+    }
+
+    return searchResults.map((v) => v.searchable_id);
   }
 }
 
