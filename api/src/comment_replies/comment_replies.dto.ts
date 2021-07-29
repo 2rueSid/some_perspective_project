@@ -1,5 +1,14 @@
-import { Field, ObjectType } from '@nestjs/graphql';
+import { Field, InputType, ObjectType } from '@nestjs/graphql';
 import { PhotoCommentsGraphQL } from 'src/photo_comments/photo_comments.dto';
+
+@InputType()
+export class CreateReplyInput {
+  @Field()
+  comment_id: number;
+
+  @Field()
+  reply_to: number;
+}
 
 @ObjectType()
 export class CommentRepliesGraphQL {
