@@ -169,6 +169,7 @@ type Query {
   getTagsByUserId: [TagsOutputDto!]!
   getUserPhotos(paginationOptions: PaginationOptions!): PhotosWithPaginationDto!
   sayHello: String!
+  searchByUserName(name: String!): [UserGraphQL!]!
 }
 
 type ResetPasswordTokenDto {
