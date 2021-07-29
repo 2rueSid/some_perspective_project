@@ -1,5 +1,5 @@
 import { HttpException, Injectable } from '@nestjs/common';
-import { Tags, User } from '@prisma/client';
+import { Prisma, Tags, User } from '@prisma/client';
 import { PrismaService } from 'src/prisma_client/prisma.service';
 import { CreateTagsInput, DeleteTagInput, TagsOutputDto } from './tags.dto';
 import { TagsModel } from './tags.model';
@@ -36,13 +36,32 @@ export class TagsService {
     return tag.delete();
   }
 
+  async getTagsByPhotoId({
+    photo_id,
+  }: Partial<Tags>): Promise<TagsOutputDto[]> {
+    return await this.getTagsWithCustomCondition({ photo_id });
+  }
 
+  async getTagsByUserId({ user_id }: Partial<Tags>): Promise<TagsOutputDto[]> {
+    return await this.getTagsWithCustomCondition({ user_id });
+  }
+
+  async getTagsByName({ name }: Partial<Tags>): Promise<TagsOutputDto[]> {
+    return await this.getTagsWithCustomCondition({
+      name: {
+        startsWith: name,
+      },
+    });
+  }
+
+  private async getTagsWithCustomCondition(
+    where: Prisma.TagsWhereInput,
+  ): Promise<TagsOutputDto[]> {
+    return await this.prisma.tags.findMany({
+      where,
+      orderBy: {
+        created_at: 'desc',
+      },
+    });
+  }
 }
-
-/*
-  create
-  delete by user_id
-  get by photo id
-  get by user_id
-  get by name
-*/
