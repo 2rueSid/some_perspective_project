@@ -1,5 +1,5 @@
-import { Field, ObjectType } from '@nestjs/graphql';
-import { PhotoGraphQL } from 'src/photo/photo.dto';
+import { Field, InputType, ObjectType } from '@nestjs/graphql';
+import { MetaPagination, PhotoGraphQL } from 'src/photo/photo.dto';
 import { UserGraphQL } from 'src/user/user.dto';
 
 @ObjectType()
@@ -30,4 +30,21 @@ export class PhotoCommentsGraphQL {
   CommentReplies?: boolean;
   @Field()
   CommentReactions?: boolean;
+}
+
+@InputType()
+export class CreatePhotoComment {
+  @Field()
+  comment: string;
+  @Field()
+  photo_id: number;
+}
+
+@ObjectType()
+export class CommentsWithPagination {
+  @Field(() => [PhotoCommentsGraphQL])
+  items: PhotoCommentsGraphQL[];
+
+  @Field(() => MetaPagination)
+  meta: MetaPagination;
 }
