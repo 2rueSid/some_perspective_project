@@ -8,6 +8,7 @@ import { TokenModule } from './token/token.module';
 import { FileModule } from './file/file.module';
 import { UserLikesModule } from './user_likes/user_likes.module';
 import { PhotoModule } from './photo/photo.module';
+import { TagsModule } from './tags/tags.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { PhotoModule } from './photo/photo.module';
     FileModule,
     UserLikesModule,
     PhotoModule,
+    TagsModule,
   ],
 })
 export class AppModule {}
