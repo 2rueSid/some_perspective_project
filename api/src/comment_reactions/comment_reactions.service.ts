@@ -24,9 +24,7 @@ export class CommentReactionsService {
       return this.createReaction({ ...data, user_id, comment_id });
     }
 
-    if (reaction) {
-      return this.updateReaction({ ...data, user_id, comment_id }, reaction.id);
-    }
+    return this.updateReaction({ ...data, user_id, comment_id }, reaction.id);
   }
 
   private async createReaction(
