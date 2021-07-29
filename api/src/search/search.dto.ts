@@ -1,4 +1,4 @@
-import { Field, ObjectType } from '@nestjs/graphql';
+import { Field, InputType, ObjectType } from '@nestjs/graphql';
 import { SearchType } from '@prisma/client';
 
 @ObjectType()
@@ -15,4 +15,14 @@ export class SearchGraphQL {
   created_at?: Date;
   @Field()
   updated_at?: Date;
+}
+
+@InputType()
+export class AddUSerToSearchableInput {
+  @Field({ defaultValue: SearchType.USER })
+  type?: SearchType;
+  @Field()
+  searchable: string;
+  @Field()
+  searchable_id: number;
 }

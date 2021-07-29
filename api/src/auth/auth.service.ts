@@ -18,6 +18,7 @@ import { TokenService } from 'src/token/token.service';
 import { JwtService } from '@nestjs/jwt';
 import { TokenModel } from 'src/token/token.model';
 import { generateSlug } from 'src/utils/generate_slug';
+import { SearchService } from 'src/search/search.service';
 
 @Injectable()
 export class AuthService {
@@ -27,6 +28,7 @@ export class AuthService {
     private readonly prisma: PrismaService,
     private readonly tokenService: TokenService,
     private readonly jwtService: JwtService,
+    private readonly searchService: SearchService,
   ) {}
 
   async signUp({
@@ -49,6 +51,10 @@ export class AuthService {
     });
 
     await this.sendActivationEmail(createdUser);
+    await this.searchService.addUserToSearchTable({
+      searchable: createdUser.first_name,
+      searchable_id: createdUser.id,
+    });
 
     return await this.generateLoginPayload(createdUser, false);
   }
