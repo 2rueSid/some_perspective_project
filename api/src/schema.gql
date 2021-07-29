@@ -6,6 +6,13 @@ input ActivateUserInput {
   activate_token: String!
 }
 
+input CommentReactionsCreateInput {
+  comment_id: Float!
+  is_disliked: Boolean!
+  is_liked: Boolean!
+  user_id: Float
+}
+
 input CommentUpdateInput {
   comment: String!
   id: Float!
@@ -80,6 +87,7 @@ type Mutation {
   activateUserAccount(activateAccount: ActivateUserInput!): UserOutputDto!
   createComment(commentCreate: CreatePhotoComment!): PhotoCommentsGraphQL!
   createPhoto(createPhotoArgs: CreatePhotoInput!): PhotoOutputDto!
+  createReaction(commentReaction: CommentReactionsCreateInput!): Boolean!
   createReply(replyToArgs: CreateReplyInput!): Boolean!
   createResetToken(userEmail: CreateResetToken!): ResetPasswordTokenDto!
   createTag(createTagData: CreateTagsInput!): TagsOutputDto!
