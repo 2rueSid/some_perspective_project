@@ -10,6 +10,7 @@ import { UserLikesModule } from './user_likes/user_likes.module';
 import { PhotoModule } from './photo/photo.module';
 import { TagsModule } from './tags/tags.module';
 import { PhotoComments } from './photo_comments/photo_comments.module';
+import { CommentReplies } from './comment_replies/comment_replies.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { PhotoComments } from './photo_comments/photo_comments.module';
     PhotoModule,
     TagsModule,
     PhotoComments,
+    CommentReplies,
   ],
 })
 export class AppModule {}
