@@ -12,6 +12,7 @@ import { TagsModule } from './tags/tags.module';
 import { PhotoComments } from './photo_comments/photo_comments.module';
 import { CommentReplies } from './comment_replies/comment_replies.module';
 import { CommentReactions } from './comment_reactions/comment_reaction.module';
+import { Search } from './search/search.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { CommentReactions } from './comment_reactions/comment_reaction.module';
     PhotoComments,
     CommentReplies,
     CommentReactions,
+    Search,
   ],
 })
 export class AppModule {}
