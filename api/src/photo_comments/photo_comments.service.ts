@@ -1,5 +1,5 @@
 import { HttpException, Injectable } from '@nestjs/common';
-import { User } from '@prisma/client';
+import { Prisma, User } from '@prisma/client';
 import { PaginationOptions } from 'src/photo/photo.dto';
 import { PrismaService } from 'src/prisma_client/prisma.service';
 import { PhotoCommentsModel } from './photo.comments.model';
@@ -29,7 +29,10 @@ export class PhotoCommentsService {
     photoId: number,
     { skip, take, page }: PaginationOptions,
   ): Promise<CommentsWithPagination> {
-    const where = { photo_id: photoId };
+    const where: Prisma.PhotoCommentsWhereInput = {
+      photo_id: photoId,
+      deleted_at: null,
+    };
 
     const comments = await this.prisma.photoComments.findMany({
       skip,
