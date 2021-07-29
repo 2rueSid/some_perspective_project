@@ -182,7 +182,7 @@ model Search {
 
 enum SearchType {
   USER
-  TITLE
+  PHOTO
 }
 
 enum Role {

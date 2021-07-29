@@ -26,3 +26,13 @@ export class AddUSerToSearchableInput {
   @Field()
   searchable_id: number;
 }
+
+@InputType()
+export class AddPhotoToSearchableInput {
+  @Field({ defaultValue: SearchType.PHOTO })
+  type?: SearchType;
+  @Field()
+  searchable: string;
+  @Field()
+  searchable_id: number;
+}

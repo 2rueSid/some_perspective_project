@@ -1,6 +1,7 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { Photo, Prisma, User } from '@prisma/client';
 import { PrismaService } from 'src/prisma_client/prisma.service';
+import { SearchService } from 'src/search/search.service';
 import { generateSlug } from 'src/utils/generate_slug';
 import {
   CreatePhotoInput,
@@ -21,7 +22,10 @@ export const bunchOfRelations: Prisma.PhotoInclude = {
 };
 @Injectable()
 export class PhotoService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly searchService: SearchService,
+  ) {}
 
   async createPhoto(
     data: CreatePhotoInput,
@@ -32,6 +36,11 @@ export class PhotoService {
     const photo = await this.prisma.photo.create({
       data: { user_id: user.id, slug, ...data },
       include: bunchOfRelations,
+    });
+
+    await this.searchService.addPhotoToSearchableTable({
+      searchable: `${photo.title} ${photo?.description}`,
+      searchable_id: photo.id,
     });
 
     return photo;

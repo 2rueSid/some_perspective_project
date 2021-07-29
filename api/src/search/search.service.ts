@@ -1,7 +1,10 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { SearchType, User } from '@prisma/client';
 import { PrismaService } from 'src/prisma_client/prisma.service';
-import { AddUSerToSearchableInput } from './search.dto';
+import {
+  AddPhotoToSearchableInput,
+  AddUSerToSearchableInput,
+} from './search.dto';
 
 @Injectable()
 export class SearchService {
@@ -13,6 +16,7 @@ export class SearchService {
         searchable: {
           contains: name,
         },
+        type: SearchType.USER,
       },
       select: {
         searchable_id: true,
@@ -37,6 +41,25 @@ export class SearchService {
     });
 
     return await users;
+  }
+
+  async addPhotoToSearchableTable(
+    photo: AddPhotoToSearchableInput,
+  ): Promise<boolean> {
+    return !!(await this.prisma.search.create({
+      data: { ...photo, type: SearchType.PHOTO },
+    }));
+  }
+
+  async deletePhotoFromSearchable(searchable_id: number): Promise<boolean> {
+    return !!(await this.prisma.search.delete({
+      where: {
+        searchable_id_type: {
+          searchable_id,
+          type: SearchType.PHOTO,
+        },
+      },
+    }));
   }
 
   async addUserToSearchTable(user: AddUSerToSearchableInput): Promise<boolean> {
