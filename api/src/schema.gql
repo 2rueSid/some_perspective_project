@@ -6,6 +6,21 @@ input ActivateUserInput {
   activate_token: String!
 }
 
+input CommentUpdateInput {
+  comment: String!
+  id: Float!
+}
+
+type CommentsWithPagination {
+  items: [PhotoCommentsGraphQL!]!
+  meta: MetaPagination!
+}
+
+input CreatePhotoComment {
+  comment: String!
+  photo_id: Float!
+}
+
 input CreatePhotoInput {
   description: String!
   title: String!
@@ -58,20 +73,46 @@ type MetaPagination {
 
 type Mutation {
   activateUserAccount(activateAccount: ActivateUserInput!): UserOutputDto!
+  createComment(commentCreate: CreatePhotoComment!): PhotoCommentsGraphQL!
   createPhoto(createPhotoArgs: CreatePhotoInput!): PhotoOutputDto!
   createResetToken(userEmail: CreateResetToken!): ResetPasswordTokenDto!
   createTag(createTagData: CreateTagsInput!): TagsOutputDto!
+  deleteComment(comment_id: Float!): Boolean!
   deletePhoto(deletePhoto: DeletePhotoInput!): Boolean!
   deleteTag(tag_id: DeleteTagInput!): Boolean!
   resetPassword(resetPassword: ResetUserPassword!): UserOutputDto!
   setUserReaction(userReaction: UserReactionInput!): Boolean!
   signUp(signUpInput: UserSignUpInput!): UserOutputDto!
   singIn(signInInput: UserSignInInput!): UserOutputDto!
+  updateComment(updateCommentArgs: CommentUpdateInput!): PhotoCommentsGraphQL!
   updatePhoto(updatePhotoArgs: UpdatePhotoInput!): PhotoOutputDto!
 }
 
 input PaginationOptions {
   page: Float!
+  skip: Float!
+  take: Float!
+}
+
+type PhotoCommentsGraphQL {
+  CommentReactions: Boolean!
+  CommentReplies: Boolean!
+  Photo: PhotoGraphQL!
+  User: UserGraphQL!
+  comment: String!
+  created_at: DateTime!
+  deleted_at: DateTime!
+  id: Float!
+  is_edited: Boolean!
+  is_seen: Boolean!
+  photo_id: Float!
+  updated_at: DateTime!
+  user_id: Float!
+}
+
+input PhotoCommentsInput {
+  page: Float!
+  photoId: Float!
   skip: Float!
   take: Float!
 }
@@ -105,6 +146,7 @@ type PhotosWithPaginationDto {
 }
 
 type Query {
+  getCommentsByPhotoId(pagination: PhotoCommentsInput!): CommentsWithPagination!
   getLikedPhotos(paginationOptions: PaginationOptions!): PhotosWithPaginationDto!
   getPhotoBySlug(photoSlug: String!): PhotoOutputDto!
   getPhotos(paginationOptions: PaginationOptions!): PhotosWithPaginationDto!

@@ -68,5 +68,6 @@ export class PhotoCommentsInput extends PickType(PaginationOptions, [
   'take',
   'skip',
 ] as const) {
+  @Field()
   photoId: number;
 }
