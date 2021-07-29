@@ -27,6 +27,11 @@ input CreatePhotoInput {
   user_id: Float
 }
 
+input CreateReplyInput {
+  comment_id: Float!
+  reply_to: Float!
+}
+
 input CreateResetToken {
   email: String!
 }
@@ -75,6 +80,7 @@ type Mutation {
   activateUserAccount(activateAccount: ActivateUserInput!): UserOutputDto!
   createComment(commentCreate: CreatePhotoComment!): PhotoCommentsGraphQL!
   createPhoto(createPhotoArgs: CreatePhotoInput!): PhotoOutputDto!
+  createReply(replyToArgs: CreateReplyInput!): Boolean!
   createResetToken(userEmail: CreateResetToken!): ResetPasswordTokenDto!
   createTag(createTagData: CreateTagsInput!): TagsOutputDto!
   deleteComment(comment_id: Float!): Boolean!
