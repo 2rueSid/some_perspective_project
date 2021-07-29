@@ -1,5 +1,9 @@
-import { Field, InputType, ObjectType } from '@nestjs/graphql';
-import { MetaPagination, PhotoGraphQL } from 'src/photo/photo.dto';
+import { Field, InputType, ObjectType, PickType } from '@nestjs/graphql';
+import {
+  MetaPagination,
+  PaginationOptions,
+  PhotoGraphQL,
+} from 'src/photo/photo.dto';
 import { UserGraphQL } from 'src/user/user.dto';
 
 @InputType()
@@ -56,4 +60,13 @@ export class CommentsWithPagination {
 
   @Field(() => MetaPagination)
   meta: MetaPagination;
+}
+
+@InputType()
+export class PhotoCommentsInput extends PickType(PaginationOptions, [
+  'page',
+  'take',
+  'skip',
+] as const) {
+  photoId: number;
 }

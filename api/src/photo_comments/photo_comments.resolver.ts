@@ -4,9 +4,11 @@ import { User } from '@prisma/client';
 import { GqlAuthGuard } from 'src/auth/auth.gaurd';
 import { CurrentUser } from 'src/user/current_user.decorator';
 import {
+  CommentsWithPagination,
   CommentUpdateInput,
   CreatePhotoComment,
   PhotoCommentsGraphQL,
+  PhotoCommentsInput,
 } from './photo_comments.dto';
 import { PhotoCommentsService } from './photo_comments.service';
 
@@ -44,5 +46,13 @@ export class PhotoCommentsResolver {
       user,
       updateCommentArgs,
     );
+  }
+
+  @Query(() => CommentsWithPagination)
+  async getCommentsByPhotoId(
+    @Args({ name: 'pagination', type: () => PhotoCommentsInput })
+    pagination: PhotoCommentsInput,
+  ): Promise<CommentsWithPagination> {
+    return await this.photoCommentsService.getCommentsByPhotoId(pagination);
   }
 }

@@ -8,6 +8,7 @@ import {
   CommentUpdateInput,
   CreatePhotoComment,
   PhotoCommentsGraphQL,
+  PhotoCommentsInput,
 } from './photo_comments.dto';
 
 @Injectable()
@@ -25,10 +26,12 @@ export class PhotoCommentsService {
     return await newComment;
   }
 
-  async getCommentsByPhotoId(
-    photoId: number,
-    { skip, take, page }: PaginationOptions,
-  ): Promise<CommentsWithPagination> {
+  async getCommentsByPhotoId({
+    skip,
+    take,
+    page,
+    photoId,
+  }: PhotoCommentsInput): Promise<CommentsWithPagination> {
     const where: Prisma.PhotoCommentsWhereInput = {
       photo_id: photoId,
       deleted_at: null,
