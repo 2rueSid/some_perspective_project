@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { User } from '@prisma/client';
 import { PaginationOptions } from 'src/photo/photo.dto';
 import { PrismaService } from 'src/prisma_client/prisma.service';
+import { PhotoCommentsModel } from './photo.comments.model';
 import {
   CommentsWithPagination,
   CreatePhotoComment,
@@ -48,6 +49,23 @@ export class PhotoCommentsService {
     };
 
     return { meta, items: comments };
+  }
+
+  async deleteComment(
+    { id }: Partial<User>,
+    commentId: number,
+  ): Promise<boolean> {
+    const comment = await PhotoCommentsModel({ id: commentId });
+
+    if (!comment.exists) {
+      throw new HttpException('Not Exists', 404);
+    }
+
+    if (!comment.isOwner(id)) {
+      throw new HttpException('Not permitted', 405);
+    }
+
+    return comment.delete();
   }
 }
 
