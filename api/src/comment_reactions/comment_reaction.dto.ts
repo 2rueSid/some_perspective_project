@@ -1,4 +1,4 @@
-import { Field, ObjectType } from '@nestjs/graphql';
+import { Field, InputType, ObjectType } from '@nestjs/graphql';
 import { PhotoCommentsGraphQL } from 'src/photo_comments/photo_comments.dto';
 import { UserGraphQL } from 'src/user/user.dto';
 
@@ -22,4 +22,16 @@ export class CommentReactionGraphQL {
   Comment?: PhotoCommentsGraphQL;
   @Field(() => UserGraphQL)
   User?: UserGraphQL;
+}
+
+@InputType()
+export class CommentReactionsCreateInput {
+  @Field()
+  comment_id: number;
+  @Field()
+  user_id: number;
+  @Field()
+  is_liked: boolean;
+  @Field()
+  is_disliked: boolean;
 }
