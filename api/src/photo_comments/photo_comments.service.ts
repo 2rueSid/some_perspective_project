@@ -5,6 +5,7 @@ import { PrismaService } from 'src/prisma_client/prisma.service';
 import { PhotoCommentsModel } from './photo.comments.model';
 import {
   CommentsWithPagination,
+  CommentUpdateInput,
   CreatePhotoComment,
   PhotoCommentsGraphQL,
 } from './photo_comments.dto';
@@ -57,22 +58,23 @@ export class PhotoCommentsService {
   ): Promise<boolean> {
     const comment = await PhotoCommentsModel({ id: commentId });
 
-    if (!comment.exists) {
-      throw new HttpException('Not Exists', 404);
-    }
-
     if (!comment.isOwner(id)) {
       throw new HttpException('Not permitted', 405);
     }
 
     return comment.delete();
   }
+
+  async updateComment(
+    { id: userId }: Partial<User>,
+    { comment, id }: CommentUpdateInput,
+  ): Promise<Partial<PhotoCommentsGraphQL>> {
+    const commentToUpdate = await PhotoCommentsModel({ id });
+
+    if (!commentToUpdate.isOwner(userId)) {
+      throw new HttpException('Not permitted', 405);
+    }
+
+    return await commentToUpdate.update({ comment });
+  }
 }
-
-/*
-  create comment
-  get comments by photo id
-  update comment
-  delete comment
-
-*/

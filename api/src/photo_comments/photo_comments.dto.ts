@@ -2,6 +2,15 @@ import { Field, InputType, ObjectType } from '@nestjs/graphql';
 import { MetaPagination, PhotoGraphQL } from 'src/photo/photo.dto';
 import { UserGraphQL } from 'src/user/user.dto';
 
+@InputType()
+export class CommentUpdateInput {
+  @Field()
+  comment: string;
+
+  @Field()
+  id: number;
+}
+
 @ObjectType()
 export class PhotoCommentsGraphQL {
   @Field()

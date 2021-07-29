@@ -59,7 +59,7 @@ export async function PhotoCommentsModel(
       return !!res;
     },
     isOwner: (userId) => {
-      return comment.user_id === userId;
+      return comment?.user_id === userId;
     },
     update: async (data) => {
       const updatedComment = await prisma.photoComments.update({
