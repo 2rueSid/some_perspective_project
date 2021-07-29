@@ -36,17 +36,15 @@ export class TagsService {
     return tag.delete();
   }
 
-  async getTagsByPhotoId({
-    photo_id,
-  }: Partial<Tags>): Promise<TagsOutputDto[]> {
+  async getTagsByPhotoId(photo_id): Promise<TagsOutputDto[]> {
     return await this.getTagsWithCustomCondition({ photo_id });
   }
 
-  async getTagsByUserId({ user_id }: Partial<Tags>): Promise<TagsOutputDto[]> {
+  async getTagsByUserId(user_id: number): Promise<TagsOutputDto[]> {
     return await this.getTagsWithCustomCondition({ user_id });
   }
 
-  async getTagsByName({ name }: Partial<Tags>): Promise<TagsOutputDto[]> {
+  async getTagsByName(name: string): Promise<TagsOutputDto[]> {
     return await this.getTagsWithCustomCondition({
       name: {
         startsWith: name,

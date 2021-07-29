@@ -29,11 +29,23 @@ export class TagsResolver {
   ): Promise<boolean> {
     return await this.tagsService.deleteTag(user, deleteDatData);
   }
+
+  @Query(() => [TagsOutputDto])
+  async getTagsByPhotoId(
+    @Args('photoId') photoId: number,
+  ): Promise<TagsOutputDto[]> {
+    return await this.tagsService.getTagsByPhotoId(photoId);
+  }
+
+  @Query(() => [TagsOutputDto])
+  async getTagsByUserId(
+    @Args('userId') userId: number,
+  ): Promise<TagsOutputDto[]> {
+    return await this.tagsService.getTagsByUserId(userId);
+  }
+
+  @Query(() => [TagsOutputDto])
+  async getTagsByName(@Args('name') name: string): Promise<TagsOutputDto[]> {
+    return await this.tagsService.getTagsByName(name);
+  }
 }
-
-// createTag;
-// deleteTag;
-// getTagsByPhotoId;
-
-// getTagsByUserId;
-// getTagsByName;
