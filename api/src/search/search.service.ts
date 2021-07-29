@@ -109,19 +109,3 @@ export class SearchService {
     return searchResults.map((v) => v.searchable_id);
   }
 }
-
-/*
-  search users  
-  - search by name
-
-  search photos
-  - search by name
-  - search by author
-  - search by tags
-
-  methods to:
-  - add user on create to search table
-  - add photo on create to search table
-  - delete user on delete
-  - delete photo on delete
-*/
