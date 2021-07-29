@@ -167,6 +167,22 @@ model UserLikes {
   @@unique([user_id, photo_id])
 }
 
+model Search {
+  id            Int        @id @default(autoincrement())
+  type          SearchType
+  searchable    String
+  searchable_id Int
+  created_at    DateTime   @default(now())
+  updated_at    DateTime   @default(now())
+
+  @@map("search")
+}
+
+enum SearchType {
+  USER
+  TITLE
+}
+
 enum Role {
   USER
   ADMIN
