@@ -1,11 +1,43 @@
-import { Injectable } from '@nestjs/common';
-import { SearchType } from '@prisma/client';
+import { HttpException, Injectable } from '@nestjs/common';
+import { SearchType, User } from '@prisma/client';
 import { PrismaService } from 'src/prisma_client/prisma.service';
 import { AddUSerToSearchableInput } from './search.dto';
 
 @Injectable()
 export class SearchService {
   constructor(private readonly prisma: PrismaService) {}
+
+  async searchUserByName(name: string): Promise<User[]> {
+    const searchResults = await this.prisma.search.findMany({
+      where: {
+        searchable: {
+          contains: name,
+        },
+      },
+      select: {
+        searchable_id: true,
+      },
+      orderBy: {
+        created_at: 'desc',
+      },
+    });
+
+    if (!searchResults?.length) {
+      throw new HttpException('Not Found', 404);
+    }
+
+    const mappedIds = searchResults.map((v) => v.searchable_id);
+
+    const users = await this.prisma.user.findMany({
+      where: {
+        id: {
+          in: mappedIds,
+        },
+      },
+    });
+
+    return await users;
+  }
 
   async addUserToSearchTable(user: AddUSerToSearchableInput): Promise<boolean> {
     return !!(await this.prisma.search.create({

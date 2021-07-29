@@ -52,7 +52,7 @@ export class AuthService {
 
     await this.sendActivationEmail(createdUser);
     await this.searchService.addUserToSearchTable({
-      searchable: createdUser.first_name,
+      searchable: `${createdUser.first_name} ${createdUser?.last_name}`,
       searchable_id: createdUser.id,
     });
 
