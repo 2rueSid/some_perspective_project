@@ -28,7 +28,7 @@ export class CommentReactionGraphQL {
 export class CommentReactionsCreateInput {
   @Field()
   comment_id: number;
-  @Field()
+  @Field({ nullable: true })
   user_id: number;
   @Field()
   is_liked: boolean;
