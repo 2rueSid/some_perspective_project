@@ -1,4 +1,4 @@
-import { Field, ObjectType } from '@nestjs/graphql';
+import { Field, InputType, ObjectType } from '@nestjs/graphql';
 import { Role } from '@prisma/client';
 
 @ObjectType()
@@ -31,4 +31,28 @@ export class UserGraphQL {
   created_at?: Date;
   @Field()
   updated_at?: Date;
+}
+
+@InputType()
+export class UserUpdateInput {
+  @Field({ nullable: true })
+  first_name?: string;
+
+  @Field({ nullable: true })
+  last_name?: string;
+
+  @Field()
+  is_active?: boolean;
+
+  @Field()
+  is_disabled?: boolean;
+
+  @Field()
+  send_emails?: boolean;
+
+  @Field()
+  email?: string;
+
+  @Field()
+  password?: string;
 }
