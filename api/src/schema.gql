@@ -102,7 +102,7 @@ type Mutation {
   singIn(signInInput: UserSignInInput!): UserOutputDto!
   updateComment(updateCommentArgs: CommentUpdateInput!): PhotoCommentsGraphQL!
   updatePhoto(updatePhotoArgs: UpdatePhotoInput!): PhotoOutputDto!
-  updateUSer(updateUserArgs: UserUpdateInput!): UserOutputDto!
+  updateUser(updateUserArgs: UserUpdateInput!): UserOutputDto!
 }
 
 input PaginationOptions {
@@ -274,12 +274,12 @@ input UserSignUpInput {
 }
 
 input UserUpdateInput {
-  avatar_id: Float!
-  email: String!
+  avatar_id: Float
+  email: String
   first_name: String
-  is_active: Boolean!
-  is_disabled: Boolean!
+  is_active: Boolean
+  is_disabled: Boolean
   last_name: String
-  password: String!
-  send_emails: Boolean!
+  password: String
+  send_emails: Boolean
 }

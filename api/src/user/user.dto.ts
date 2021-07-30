@@ -41,21 +41,21 @@ export class UserUpdateInput {
   @Field({ nullable: true })
   last_name?: string;
 
-  @Field()
+  @Field({ nullable: true })
   is_active?: boolean;
 
-  @Field()
+  @Field({ nullable: true })
   is_disabled?: boolean;
 
-  @Field()
+  @Field({ nullable: true })
   send_emails?: boolean;
 
-  @Field()
+  @Field({ nullable: true })
   email?: string;
 
-  @Field()
+  @Field({ nullable: true })
   password?: string;
 
-  @Field()
+  @Field({ nullable: true })
   avatar_id?: number | null;
 }

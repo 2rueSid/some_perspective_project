@@ -1,5 +1,5 @@
 import { UseGuards } from '@nestjs/common';
-import { Query, Mutation, Resolver, Args } from '@nestjs/graphql';
+import { Mutation, Resolver, Args } from '@nestjs/graphql';
 import { User } from '@prisma/client';
 import { UserOutputDto } from 'src/auth/auth.dto';
 import { GqlAuthGuard } from 'src/auth/auth.gaurd';
@@ -13,7 +13,7 @@ export class UserResolver {
 
   @Mutation(() => UserOutputDto)
   @UseGuards(GqlAuthGuard)
-  async updateUSer(
+  async updateUser(
     @Args({ name: 'updateUserArgs', type: () => UserUpdateInput })
     updateUserArgs,
     @CurrentUser() user: Partial<User>,
