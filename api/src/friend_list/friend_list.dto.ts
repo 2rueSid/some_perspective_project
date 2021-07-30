@@ -1,4 +1,4 @@
-import { Field, ObjectType } from '@nestjs/graphql';
+import { Field, InputType, ObjectType } from '@nestjs/graphql';
 import { UserGraphQL } from 'src/user/user.dto';
 
 @ObjectType()
@@ -15,4 +15,10 @@ export class FriendListOutputDto {
   updated_at?: Date;
   @Field(() => UserGraphQL)
   User?: UserGraphQL;
+}
+
+@InputType()
+export class AddToFriendListInput {
+  @Field()
+  friend_id: number;
 }
