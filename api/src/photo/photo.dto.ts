@@ -1,4 +1,4 @@
-import { Field, InputType, ObjectType } from '@nestjs/graphql';
+import { Field, InputType, ObjectType, PickType } from '@nestjs/graphql';
 import { FileGraphQL } from 'src/file/file.dto';
 import { TagsGraphQL } from 'src/tags/tags.dto';
 import { UserGraphQL } from 'src/user/user.dto';
@@ -68,6 +68,16 @@ export class PaginationOptions {
 
   @Field()
   page?: number;
+}
+
+@InputType()
+export class GetPhotosWithPagination extends PickType(PaginationOptions, [
+  'page',
+  'skip',
+  'take',
+] as const) {
+  @Field()
+  sort_by: 'top' | 'bad' | 'newly' | 'oldest';
 }
 
 @InputType()

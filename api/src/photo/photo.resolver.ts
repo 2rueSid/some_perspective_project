@@ -6,6 +6,7 @@ import { CurrentUser } from 'src/user/current_user.decorator';
 import {
   CreatePhotoInput,
   DeletePhotoInput,
+  GetPhotosWithPagination,
   PaginationOptions,
   PhotoOutputDto,
   PhotosWithPaginationDto,
@@ -66,8 +67,8 @@ export class PhotoResolver {
 
   @Query(() => PhotosWithPaginationDto)
   async getPhotos(
-    @Args({ name: 'paginationOptions', type: () => PaginationOptions })
-    pagination: PaginationOptions,
+    @Args({ name: 'paginationOptions', type: () => GetPhotosWithPagination })
+    pagination: GetPhotosWithPagination,
   ): Promise<Partial<PhotosWithPaginationDto>> {
     return await this.photoService.getPhotos(pagination);
   }
