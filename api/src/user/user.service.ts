@@ -20,8 +20,9 @@ export class UserService {
     user: Partial<User>,
   ): Promise<Partial<UserOutputDto>> {
     const userToUpdate = await UserModel({ id: user.id });
+    console.log(userToUpdate.isDeleted());
 
-    if (userToUpdate.isDeleted) {
+    if (userToUpdate.isDeleted()) {
       throw new HttpException('Not Found', 404);
     }
 
@@ -51,14 +52,11 @@ export class UserService {
     file: Express.Multer.File,
     user: Partial<User>,
   ): Promise<Partial<User>> {
-    const uploadedFile = await this.fileService.uploadFiles([file], user, {
+    const uploadedFile = await this.fileService.uploadFile(file, user, {
       type: FileTypes.AVATAR,
     });
 
-    return await this.updateUserProfile(
-      { avatar_id: uploadedFile[0].id },
-      user,
-    );
+    return await this.updateUserProfile({ avatar_id: uploadedFile.id }, user);
   }
 
   private async hashPassword(password: string): Promise<string> {

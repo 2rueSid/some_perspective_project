@@ -29,7 +29,7 @@ export class UserController {
     }),
   )
   async uploadFiles(
-    @UploadedFile() uploadedFile,
+    @UploadedFile() uploadedFile: Express.Multer.File,
     @RestCurrentUser() currentUser: Partial<User>,
   ): Promise<Partial<User>> {
     return await this.userService.uploadAvatar(uploadedFile, currentUser);
