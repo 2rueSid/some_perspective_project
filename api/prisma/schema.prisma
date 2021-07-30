@@ -34,6 +34,7 @@ model User {
   PhotoComments PhotoComments[]
 
   CommentReactions CommentReactions[]
+  FriendList       FriendList[]
   @@unique([email, slug])
   @@map("users")
 }
@@ -178,6 +179,19 @@ model Search {
 
   @@unique([searchable_id, type])
   @@map("search")
+}
+
+model FriendList {
+  id         Int      @id @default(autoincrement())
+  user_id    Int
+  friend_id  Int
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now())
+
+  User User @relation(fields: [user_id], references: [id])
+
+  @@unique([user_id, friend_id])
+  @@map("friend_list")
 }
 
 enum SearchType {
