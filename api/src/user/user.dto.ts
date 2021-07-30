@@ -55,4 +55,7 @@ export class UserUpdateInput {
 
   @Field()
   password?: string;
+
+  @Field()
+  avatar_id?: number | null;
 }

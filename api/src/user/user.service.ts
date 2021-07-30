@@ -1,14 +1,18 @@
 import * as bcrypt from 'bcrypt';
 import { HttpException, Injectable } from '@nestjs/common';
-import { User } from '@prisma/client';
+import { FileTypes, User } from '@prisma/client';
 import { UserOutputDto } from 'src/auth/auth.dto';
 import { PrismaService } from 'src/prisma_client/prisma.service';
 import { UserUpdateInput } from './user.dto';
 import { UserModel } from './user.model';
+import { FileService } from 'src/file/file.service';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly fileService: FileService,
+  ) {}
   private readonly saltRounds = 10;
 
   async updateUserProfile(
@@ -43,13 +47,22 @@ export class UserService {
     return updated;
   }
 
+  async uploadAvatar(
+    file: Express.Multer.File,
+    user: Partial<User>,
+  ): Promise<Partial<User>> {
+    const uploadedFile = await this.fileService.uploadFiles([file], user, {
+      type: FileTypes.AVATAR,
+    });
+
+    return await this.updateUserProfile(
+      { avatar_id: uploadedFile[0].id },
+      user,
+    );
+  }
+
   private async hashPassword(password: string): Promise<string> {
     const salt = await bcrypt.genSalt(this.saltRounds);
     return await bcrypt.hash(password, salt);
   }
 }
-
-// change profile data
-// upload an avatar
-// change email
-// change password
