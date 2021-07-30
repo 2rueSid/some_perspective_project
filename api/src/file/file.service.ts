@@ -28,6 +28,14 @@ export class FileService {
     return uploadedFiles;
   }
 
+  async uploadFile(
+    file: Express.Multer.File,
+    user: Partial<User>,
+    { type }: Partial<FileOutput>,
+  ): Promise<FileOutput> {
+    return await this.saveFileLocal(file, user, { type });
+  }
+
   private async saveFileLocal(
     file: Express.Multer.File,
     { email, slug }: Partial<User>,

@@ -13,6 +13,7 @@ import { PhotoComments } from './photo_comments/photo_comments.module';
 import { CommentReplies } from './comment_replies/comment_replies.module';
 import { CommentReactions } from './comment_reactions/comment_reaction.module';
 import { Search } from './search/search.module';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { Search } from './search/search.module';
     CommentReplies,
     CommentReactions,
     Search,
+    UserModule,
   ],
 })
 export class AppModule {}
