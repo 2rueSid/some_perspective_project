@@ -182,11 +182,13 @@ model Search {
 }
 
 model FriendList {
-  id         Int      @id @default(autoincrement())
-  user_id    Int
-  friend_id  Int
-  created_at DateTime @default(now())
-  updated_at DateTime @default(now())
+  id           Int      @id @default(autoincrement())
+  user_id      Int
+  friend_id    Int
+  is_requested Boolean
+  is_accepted  Boolean
+  created_at   DateTime @default(now())
+  updated_at   DateTime @default(now())
 
   User User @relation(fields: [user_id], references: [id])
 

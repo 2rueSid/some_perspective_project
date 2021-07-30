@@ -11,6 +11,10 @@ export class FriendListOutputDto {
   friend_id?: number;
   @Field()
   created_at?: Date;
+  @Field({ nullable: true })
+  is_requested?: boolean;
+  @Field({ nullable: true })
+  is_accepted?: boolean;
   @Field()
   updated_at?: Date;
   @Field(() => UserGraphQL)

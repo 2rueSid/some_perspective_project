@@ -19,8 +19,42 @@ export class FriendListService {
     }
 
     return !!(await this.prismaService.friendList.create({
-      data: { user_id: user.id, friend_id },
+      data: {
+        user_id: user.id,
+        friend_id,
+        is_accepted: false,
+        is_requested: true,
+      },
     }));
+  }
+
+  async acceptInvitation(
+    { friend_id }: Partial<AddToFriendListInput>,
+    user: Partial<User>,
+  ): Promise<boolean> {
+    await this.prismaService.friendList.create({
+      data: {
+        user_id: friend_id,
+        friend_id: user.id,
+        is_accepted: true,
+        is_requested: false,
+      },
+    });
+
+    const res = await this.prismaService.friendList.update({
+      where: {
+        user_id_friend_id: {
+          user_id: user.id,
+          friend_id,
+        },
+      },
+      data: {
+        is_accepted: true,
+        is_requested: false,
+      },
+    });
+
+    return !!res;
   }
 
   async removeFromList(
