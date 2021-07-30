@@ -85,6 +85,8 @@ type MetaPagination {
 
 type Mutation {
   activateUserAccount(activateAccount: ActivateUserInput!): UserOutputDto!
+  changeEmail(changeEmailArgs: UserUpdateInput!): UserOutputDto!
+  changeUserPassword(changePasswordArgs: UserUpdateInput!): UserOutputDto!
   createComment(commentCreate: CreatePhotoComment!): PhotoCommentsGraphQL!
   createPhoto(createPhotoArgs: CreatePhotoInput!): PhotoOutputDto!
   createReaction(commentReaction: CommentReactionsCreateInput!): Boolean!
@@ -100,6 +102,7 @@ type Mutation {
   singIn(signInInput: UserSignInInput!): UserOutputDto!
   updateComment(updateCommentArgs: CommentUpdateInput!): PhotoCommentsGraphQL!
   updatePhoto(updatePhotoArgs: UpdatePhotoInput!): PhotoOutputDto!
+  updateUSer(updateUserArgs: UserUpdateInput!): UserOutputDto!
 }
 
 input PaginationOptions {
@@ -265,6 +268,17 @@ input UserSignInInput {
 input UserSignUpInput {
   email: String!
   first_name: String!
+  last_name: String
+  password: String!
+  send_emails: Boolean!
+}
+
+input UserUpdateInput {
+  avatar_id: Float!
+  email: String!
+  first_name: String
+  is_active: Boolean!
+  is_disabled: Boolean!
   last_name: String
   password: String!
   send_emails: Boolean!
