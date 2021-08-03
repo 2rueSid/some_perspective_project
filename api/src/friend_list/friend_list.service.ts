@@ -2,7 +2,7 @@ import { HttpException, Injectable } from '@nestjs/common';
 import { User } from '@prisma/client';
 import { PrismaService } from 'src/prisma_client/prisma.service';
 import { UserModel } from 'src/user/user.model';
-import { AddToFriendListInput } from './friend_list.dto';
+import { AddToFriendListInput, FriendListOutputDto } from './friend_list.dto';
 
 @Injectable()
 export class FriendListService {
@@ -45,7 +45,7 @@ export class FriendListService {
       where: {
         user_id_friend_id: {
           user_id: user.id,
-          friend_id,
+          friend_id: friend_id,
         },
       },
       data: {
@@ -61,13 +61,31 @@ export class FriendListService {
     { friend_id }: AddToFriendListInput,
     user: Partial<User>,
   ): Promise<boolean> {
-    return !!(await this.prismaService.friendList.delete({
+    return !!(await this.prismaService.friendList.deleteMany({
       where: {
-        user_id_friend_id: {
-          user_id: user.id,
-          friend_id,
+        friend_id: {
+          in: [user.id, friend_id],
+        },
+        user_id: {
+          in: [friend_id, user.id],
         },
       },
     }));
+  }
+
+  async getUserFriends(userSlug: string): Promise<FriendListOutputDto[]> {
+    const friends = await this.prismaService.friendList.findMany({
+      where: {
+        User: {
+          slug: userSlug,
+        },
+        is_accepted: true,
+      },
+      include: {
+        User: true,
+      },
+    });
+
+    return friends;
   }
 }

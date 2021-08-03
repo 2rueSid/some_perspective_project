@@ -26,3 +26,9 @@ export class AddToFriendListInput {
   @Field()
   friend_id: number;
 }
+
+@InputType()
+export class GetUserFriendsInput {
+  @Field()
+  user_slug: string;
+}
