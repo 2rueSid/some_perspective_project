@@ -33,10 +33,31 @@ model User {
   UserLikes     UserLikes[]
   PhotoComments PhotoComments[]
 
-  CommentReactions CommentReactions[]
-  FriendList       FriendList[]
+  CommentReactions  CommentReactions[]
+  FriendList        FriendList[]
+  UserPublicProfile UserPublicProfile[]
   @@unique([email, slug])
   @@map("users")
+}
+
+model UserPublicProfile {
+  id            Int      @id @default(autoincrement())
+  user_id       Int
+  facebook_link String?
+  instagram_lik String?
+  twitter_link  String?
+  youtube_link  String?
+  video_link    String?
+  about_me      String
+  public_email  String?
+  years         String?
+  created_at    DateTime @default(now())
+  updated_at    DateTime @default(now())
+
+  User User @relation(fields: [user_id], references: [id])
+  Tags Tags[]
+
+  @@map("user_public_profile")
 }
 
 model UserTokens {
@@ -148,8 +169,10 @@ model Tags {
   created_at  DateTime @default(now())
   updated_at  DateTime @default(now())
 
-  User  User?   @relation(fields: [user_id], references: [id])
-  Photo Photo[] @relation(fields: [photo_id], references: [id])
+  User                User?              @relation(fields: [user_id], references: [id])
+  Photo               Photo[]            @relation(fields: [photo_id], references: [id])
+  UserPublicProfile   UserPublicProfile? @relation(fields: [userPublicProfileId], references: [id])
+  userPublicProfileId Int?
 }
 
 model UserLikes {
