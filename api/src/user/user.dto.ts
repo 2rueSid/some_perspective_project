@@ -31,6 +31,8 @@ export class UserGraphQL {
   created_at?: Date;
   @Field()
   updated_at?: Date;
+  @Field({ nullable: true })
+  has_public_profile?: boolean;
 }
 
 @InputType()
@@ -58,4 +60,7 @@ export class UserUpdateInput {
 
   @Field({ nullable: true })
   avatar_id?: number | null;
+
+  @Field({ nullable: true })
+  has_public_profile?: boolean;
 }

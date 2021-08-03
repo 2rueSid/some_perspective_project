@@ -15,6 +15,7 @@ import { CommentReactions } from './comment_reactions/comment_reaction.module';
 import { Search } from './search/search.module';
 import { UserModule } from './user/user.module';
 import { FriendList } from './friend_list/friend_list.module';
+import { PublicProfile } from './public_profile/public_profile.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { FriendList } from './friend_list/friend_list.module';
     Search,
     UserModule,
     FriendList,
+    PublicProfile,
   ],
 })
 export class AppModule {}
