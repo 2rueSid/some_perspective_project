@@ -11,20 +11,21 @@ generator client {
 }
 
 model User {
-  id          Int       @id @default(autoincrement())
-  email       String    @unique
-  slug        String    @unique @default("")
-  password    String
-  first_name  String
-  last_name   String?
-  avatar_id   Int?
-  role        Role      @default(USER)
-  is_active   Boolean   @default(false)
-  is_disabled Boolean   @default(false)
-  send_emails Boolean   @default(false)
-  deleted_at  DateTime?
-  created_at  DateTime  @default(now())
-  updated_at  DateTime  @default(now())
+  id                 Int       @id @default(autoincrement())
+  email              String    @unique
+  slug               String    @unique @default("")
+  password           String
+  first_name         String
+  last_name          String?
+  avatar_id          Int?
+  role               Role      @default(USER)
+  is_active          Boolean   @default(false)
+  is_disabled        Boolean   @default(false)
+  send_emails        Boolean   @default(false)
+  has_public_profile Boolean   @default(false)
+  deleted_at         DateTime?
+  created_at         DateTime  @default(now())
+  updated_at         DateTime  @default(now())
 
   UserTokens    UserTokens[]
   File          File[]
@@ -55,7 +56,6 @@ model UserPublicProfile {
   updated_at    DateTime @default(now())
 
   User User @relation(fields: [user_id], references: [id])
-  Tags Tags[]
 
   @@map("user_public_profile")
 }
@@ -169,10 +169,8 @@ model Tags {
   created_at  DateTime @default(now())
   updated_at  DateTime @default(now())
 
-  User                User?              @relation(fields: [user_id], references: [id])
-  Photo               Photo[]            @relation(fields: [photo_id], references: [id])
-  UserPublicProfile   UserPublicProfile? @relation(fields: [userPublicProfileId], references: [id])
-  userPublicProfileId Int?
+  User  User?   @relation(fields: [user_id], references: [id])
+  Photo Photo[] @relation(fields: [photo_id], references: [id])
 }
 
 model UserLikes {
