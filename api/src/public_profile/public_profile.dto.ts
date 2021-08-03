@@ -5,23 +5,23 @@ import { UserGraphQL } from 'src/user/user.dto';
 export class UserPublicProfileOutput {
   @Field()
   id?: number;
-  @Field()
+  @Field({ nullable: true })
   about_me: string;
   @Field()
   user_id: number;
-  @Field()
+  @Field({ nullable: true })
   facebook_link?: string;
-  @Field()
+  @Field({ nullable: true })
   instagram_lik?: string;
-  @Field()
+  @Field({ nullable: true })
   twitter_link?: string;
-  @Field()
+  @Field({ nullable: true })
   youtube_link?: string;
-  @Field()
+  @Field({ nullable: true })
   video_link?: string;
-  @Field()
+  @Field({ nullable: true })
   public_email?: string;
-  @Field()
+  @Field({ nullable: true })
   years?: string;
   @Field()
   deleted_at?: Date;
