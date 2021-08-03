@@ -42,7 +42,7 @@ model User {
 }
 
 model UserPublicProfile {
-  id            Int      @id @default(autoincrement())
+  id            Int       @id @default(autoincrement())
   user_id       Int
   facebook_link String?
   instagram_lik String?
@@ -52,8 +52,9 @@ model UserPublicProfile {
   about_me      String
   public_email  String?
   years         String?
-  created_at    DateTime @default(now())
-  updated_at    DateTime @default(now())
+  deleted_at    DateTime?
+  created_at    DateTime  @default(now())
+  updated_at    DateTime  @default(now())
 
   User User @relation(fields: [user_id], references: [id])
 
