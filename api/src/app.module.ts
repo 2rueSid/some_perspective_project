@@ -16,6 +16,7 @@ import { Search } from './search/search.module';
 import { UserModule } from './user/user.module';
 import { FriendList } from './friend_list/friend_list.module';
 import { PublicProfile } from './public_profile/public_profile.module';
+import { Messages } from './messages/message.module';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { PublicProfile } from './public_profile/public_profile.module';
     UserModule,
     FriendList,
     PublicProfile,
+    Messages,
   ],
 })
 export class AppModule {}
