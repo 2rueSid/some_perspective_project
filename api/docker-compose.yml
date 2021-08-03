@@ -46,8 +46,8 @@ services:
       - '15672:15672'
     volumes:
       - rabbitmqdata:/var/lib/rabbitmq
-    env_file:
-      - ./rabbitmq.env
+      - ./rabbitmq.config:/etc/rabbitmq/rabbitmq.config
+      - ./definitions.json:/etc/rabbitmq/definitions.json
 
 volumes:
   hobby_project_db:
