@@ -6,6 +6,10 @@ input ActivateUserInput {
   activate_token: String!
 }
 
+input AddToFriendListInput {
+  friend_id: Float!
+}
+
 input CommentReactionsCreateInput {
   comment_id: Float!
   is_disliked: Boolean!
@@ -76,6 +80,21 @@ type FileGraphQL {
   user_id: Float!
 }
 
+type FriendListOutputDto {
+  User: UserGraphQL!
+  created_at: DateTime!
+  friend_id: Float!
+  id: Float!
+  is_accepted: Boolean
+  is_requested: Boolean
+  updated_at: DateTime!
+  user_id: Float!
+}
+
+input GetUserFriendsInput {
+  user_slug: String!
+}
+
 type MetaPagination {
   currentPage: Float!
   itemCount: Float!
@@ -84,7 +103,9 @@ type MetaPagination {
 }
 
 type Mutation {
+  acceptInvitation(acceptInvitationArgs: AddToFriendListInput!): Boolean!
   activateUserAccount(activateAccount: ActivateUserInput!): UserOutputDto!
+  addFriend(addFriend: AddToFriendListInput!): Boolean!
   changeEmail(changeEmailArgs: UserUpdateInput!): UserOutputDto!
   changeUserPassword(changePasswordArgs: UserUpdateInput!): UserOutputDto!
   createComment(commentCreate: CreatePhotoComment!): PhotoCommentsGraphQL!
@@ -96,6 +117,7 @@ type Mutation {
   deleteComment(comment_id: Float!): Boolean!
   deletePhoto(deletePhoto: DeletePhotoInput!): Boolean!
   deleteTag(tag_id: DeleteTagInput!): Boolean!
+  removeFriend(removeFriendArgs: AddToFriendListInput!): Boolean!
   resetPassword(resetPassword: ResetUserPassword!): UserOutputDto!
   setUserReaction(userReaction: UserReactionInput!): Boolean!
   signUp(signUpInput: UserSignUpInput!): UserOutputDto!
@@ -170,6 +192,7 @@ type Query {
   getTagsByName(name: String!): [TagsOutputDto!]!
   getTagsByPhotoId(photoId: Float!): [TagsOutputDto!]!
   getTagsByUserId: [TagsOutputDto!]!
+  getUserFriends(getUserFriendsArgs: GetUserFriendsInput!): [FriendListOutputDto!]!
   getUserPhotos(paginationOptions: PaginationOptions!): PhotosWithPaginationDto!
   sayHello: String!
   searchByUserName(name: String!): [UserGraphQL!]!
