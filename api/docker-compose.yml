@@ -16,6 +16,7 @@ services:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: root
       POSTGRES_HOST_AUTH_METHOD: trust
+
   api:
     container_name: app
     depends_on:
@@ -30,9 +31,24 @@ services:
     volumes:
       - /app/node_modules
       - .:/app
+    env_file:
+      - ./.env
     stdin_open: true
     tty: true
     command: ['node']
 
+  rabbitmq:
+    image: rabbitmq:3.9.1-management
+    container_name: rabbitmq
+    hostname: rabbitmq
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+    volumes:
+      - rabbitmqdata:/var/lib/rabbitmq
+    env_file:
+      - ./rabbitmq.env
+
 volumes:
   hobby_project_db:
+  rabbitmqdata:
