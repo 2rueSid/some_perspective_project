@@ -1,12 +1,38 @@
-version: '3.3'
+version: '3.7'
 
 services:
-  rabbitmq:
-    image: rabbitmq:3-management-alpine
-    hostname: my-rabbit
+  postgres:
+    image: postgres
+    restart: always
+    container_name: postgres
     volumes:
-      - ./rabbitmq/data:/var/lib/rabbitmq/mnesia/rabbit@my-rabbit
-      - ./rabbitmq/logs:/var/log/rabbitmq/log
+      - hobby_project_db:/var/lib/postgresql/data
     ports:
-      - 5672:5672
-      - 15672:15672
+      - '5433:5432'
+    expose:
+      - '5433'
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: root
+      POSTGRES_HOST_AUTH_METHOD: trust
+  api:
+    container_name: app
+    depends_on:
+      - 'postgres'
+    build:
+      dockerfile: Dockerfile
+      context: .
+    links:
+      - postgres
+    ports:
+      - '5000:5000'
+    volumes:
+      - /app/node_modules
+      - .:/app
+    stdin_open: true
+    tty: true
+    command: ['node']
+
+volumes:
+  hobby_project_db:
