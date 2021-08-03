@@ -47,5 +47,10 @@ export class PublicProfileResolver {
     return await this.publicProfileService.deletePublicProfile(user);
   }
 
-  
+  @Query(() => UserPublicProfileOutput)
+  async getPublicProfile(
+    @Args('slug') slug: string,
+  ): Promise<Partial<UserPublicProfileOutput>> {
+    return await this.publicProfileService.getPublicProfile(slug);
+  }
 }

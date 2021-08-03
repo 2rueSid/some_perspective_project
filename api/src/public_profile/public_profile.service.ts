@@ -61,9 +61,9 @@ export class PublicProfileService {
     return await profile.delete();
   }
 
-  async getPublicProfile({
-    slug,
-  }: Partial<User>): Promise<Partial<UserPublicProfileOutput>> {
+  async getPublicProfile(
+    slug: string,
+  ): Promise<Partial<UserPublicProfileOutput>> {
     const user = await UserModel({ slug });
 
     if (!user.exists || user.isDeleted) {
