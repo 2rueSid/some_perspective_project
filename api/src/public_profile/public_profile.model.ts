@@ -33,9 +33,12 @@ export async function PublicProfileModel(
 
   return {
     delete: async () => {
-      const res = await prisma.userPublicProfile.delete({
+      const res = await prisma.userPublicProfile.update({
         where: {
           id: publicProfile.id,
+        },
+        data: {
+          deleted_at: new Date().toISOString(),
         },
       });
 

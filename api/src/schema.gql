@@ -110,12 +110,14 @@ type Mutation {
   changeUserPassword(changePasswordArgs: UserUpdateInput!): UserOutputDto!
   createComment(commentCreate: CreatePhotoComment!): PhotoCommentsGraphQL!
   createPhoto(createPhotoArgs: CreatePhotoInput!): PhotoOutputDto!
+  createPublicProfile(createProfileArgs: UserPublicProfileInput!): UserPublicProfileOutput!
   createReaction(commentReaction: CommentReactionsCreateInput!): Boolean!
   createReply(replyToArgs: CreateReplyInput!): Boolean!
   createResetToken(userEmail: CreateResetToken!): ResetPasswordTokenDto!
   createTag(createTagData: CreateTagsInput!): TagsOutputDto!
   deleteComment(comment_id: Float!): Boolean!
   deletePhoto(deletePhoto: DeletePhotoInput!): Boolean!
+  deletePublicProfile: Boolean!
   deleteTag(tag_id: DeleteTagInput!): Boolean!
   removeFriend(removeFriendArgs: AddToFriendListInput!): Boolean!
   resetPassword(resetPassword: ResetUserPassword!): UserOutputDto!
@@ -124,6 +126,7 @@ type Mutation {
   singIn(signInInput: UserSignInInput!): UserOutputDto!
   updateComment(updateCommentArgs: CommentUpdateInput!): PhotoCommentsGraphQL!
   updatePhoto(updatePhotoArgs: UpdatePhotoInput!): PhotoOutputDto!
+  updatePublicProfile(profileUpdateArgs: UserPublicProfileInput!): UserPublicProfileOutput!
   updateUser(updateUserArgs: UserUpdateInput!): UserOutputDto!
 }
 
@@ -189,6 +192,7 @@ type Query {
   getLikedPhotos(paginationOptions: PaginationOptions!): PhotosWithPaginationDto!
   getPhotoBySlug(photoSlug: String!): PhotoOutputDto!
   getPhotos(paginationOptions: PaginationOptions!): PhotosWithPaginationDto!
+  getPublicProfile(slug: String!): UserPublicProfileOutput!
   getTagsByName(name: String!): [TagsOutputDto!]!
   getTagsByPhotoId(photoId: Float!): [TagsOutputDto!]!
   getTagsByUserId: [TagsOutputDto!]!
@@ -242,6 +246,7 @@ type UserGraphQL {
   deleted_at: DateTime!
   email: String!
   first_name: String!
+  has_public_profile: Boolean
   id: Float!
   is_active: Boolean!
   is_disabled: Boolean!
@@ -275,6 +280,34 @@ type UserOutputDto {
   slug: String
 }
 
+input UserPublicProfileInput {
+  about_me: String
+  facebook_link: String
+  instagram_lik: String
+  public_email: String
+  twitter_link: String
+  video_link: String
+  years: String
+  youtube_link: String
+}
+
+type UserPublicProfileOutput {
+  User: UserGraphQL
+  about_me: String
+  created_at: DateTime!
+  deleted_at: DateTime
+  facebook_link: String
+  id: Float!
+  instagram_lik: String
+  public_email: String
+  twitter_link: String
+  updated_at: DateTime!
+  user_id: Float!
+  video_link: String
+  years: String
+  youtube_link: String
+}
+
 input UserReactionInput {
   is_disliked: Boolean!
   is_liked: Boolean!
@@ -300,6 +333,7 @@ input UserUpdateInput {
   avatar_id: Float
   email: String
   first_name: String
+  has_public_profile: Boolean
   is_active: Boolean
   is_disabled: Boolean
   last_name: String

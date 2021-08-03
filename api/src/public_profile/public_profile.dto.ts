@@ -23,24 +23,32 @@ export class UserPublicProfileOutput {
   public_email?: string;
   @Field({ nullable: true })
   years?: string;
-  @Field()
+  @Field({ nullable: true })
   deleted_at?: Date;
   @Field()
   created_at?: Date;
   @Field()
   updated_at?: Date;
-  @Field(() => UserGraphQL)
+  @Field(() => UserGraphQL, { nullable: true })
   User?: UserGraphQL;
 }
 
 @InputType()
-export class UserPublicProfileInput extends PickType(UserPublicProfileOutput, [
-  'about_me',
-  'facebook_link',
-  'instagram_lik',
-  'public_email',
-  'twitter_link',
-  'years',
-  'video_link',
-  'youtube_link',
-] as const) {}
+export class UserPublicProfileInput {
+  @Field({ nullable: true })
+  about_me: string;
+  @Field({ nullable: true })
+  facebook_link?: string;
+  @Field({ nullable: true })
+  instagram_lik?: string;
+  @Field({ nullable: true })
+  twitter_link?: string;
+  @Field({ nullable: true })
+  youtube_link?: string;
+  @Field({ nullable: true })
+  video_link?: string;
+  @Field({ nullable: true })
+  public_email?: string;
+  @Field({ nullable: true })
+  years?: string;
+}

@@ -18,7 +18,7 @@ export class PublicProfileService {
   ): Promise<Partial<UserPublicProfileOutput>> {
     const user = await UserModel({ slug });
 
-    if (!user.exists || user.isDeleted) {
+    if (!user.exists || user.isDeleted()) {
       throw new HttpException('Not Found', 404);
     }
 
@@ -31,7 +31,12 @@ export class PublicProfileService {
         ...data,
         user_id: user.id,
       },
+      include: {
+        User: true,
+      },
     });
+
+    user.update({ has_public_profile: true });
 
     return publicProfile;
   }
@@ -66,12 +71,8 @@ export class PublicProfileService {
   ): Promise<Partial<UserPublicProfileOutput>> {
     const user = await UserModel({ slug });
 
-    if (!user.exists || user.isDeleted) {
+    if (!user.exists || user.isDeleted()) {
       throw new HttpException('Not Found', 404);
-    }
-
-    if (user.has_public_profile) {
-      throw new HttpException('Already exists', 204);
     }
 
     return await PublicProfileModel({ user_id: user.id });
