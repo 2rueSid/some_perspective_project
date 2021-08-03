@@ -27,23 +27,23 @@ model User {
   created_at         DateTime  @default(now())
   updated_at         DateTime  @default(now())
 
-  UserTokens    UserTokens[]
-  File          File[]
-  Photo         Photo[]
-  Tags          Tags[]
-  UserLikes     UserLikes[]
-  PhotoComments PhotoComments[]
-
+  UserTokens        UserTokens[]
+  File              File[]
+  Photo             Photo[]
+  Tags              Tags[]
+  UserLikes         UserLikes[]
+  PhotoComments     PhotoComments[]
   CommentReactions  CommentReactions[]
   FriendList        FriendList[]
   UserPublicProfile UserPublicProfile[]
+
   @@unique([email, slug])
   @@map("users")
 }
 
 model UserPublicProfile {
   id            Int       @id @default(autoincrement())
-  user_id       Int
+  user_id       Int       @unique
   facebook_link String?
   instagram_lik String?
   twitter_link  String?

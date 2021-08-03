@@ -1,8 +1,11 @@
 import { PrismaClient, Prisma, User, UserPublicProfile } from '@prisma/client';
-
+import { UserPublicProfileOutput } from './public_profile.dto';
 interface PublicProfileInterface extends UserPublicProfile {
   delete: () => Promise<boolean>;
   isOwner: (user_id: number) => boolean;
+  update: (
+    data: Prisma.UserPublicProfileUpdateInput,
+  ) => Promise<Partial<UserPublicProfileOutput>>;
   exists: boolean;
   User: User;
 }
@@ -15,7 +18,7 @@ export const PublicProfileWithRelations =
   });
 
 export async function PublicProfileModel(
-  where: Prisma.TagsWhereUniqueInput,
+  where: Prisma.UserPublicProfileWhereUniqueInput,
 ): Promise<PublicProfileInterface> {
   const prisma: PrismaClient = new PrismaClient();
 
@@ -37,6 +40,14 @@ export async function PublicProfileModel(
       });
 
       return !!res;
+    },
+    update: async (data) => {
+      return await prisma.userPublicProfile.update({
+        where: {
+          id: publicProfile.id,
+        },
+        data,
+      });
     },
     isOwner: (userId) => {
       return publicProfile.user_id === userId;

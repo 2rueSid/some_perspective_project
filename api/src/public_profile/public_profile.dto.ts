@@ -6,7 +6,9 @@ export class UserPublicProfileOutput {
   @Field()
   id?: number;
   @Field()
-  user_id?: string;
+  about_me: string;
+  @Field()
+  user_id: number;
   @Field()
   facebook_link?: string;
   @Field()
@@ -17,8 +19,6 @@ export class UserPublicProfileOutput {
   youtube_link?: string;
   @Field()
   video_link?: string;
-  @Field()
-  about_me?: string;
   @Field()
   public_email?: string;
   @Field()
@@ -43,7 +43,4 @@ export class UserPublicProfileInput extends PickType(UserPublicProfileOutput, [
   'years',
   'video_link',
   'youtube_link',
-] as const) {
-  @Field()
-  user_slug?: string;
-}
+] as const) {}
