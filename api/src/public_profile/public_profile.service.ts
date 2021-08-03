@@ -49,11 +49,31 @@ export class PublicProfileService {
 
     return await profile.update(data);
   }
-}
 
-/*
-  - create public profile
-  - update public profile
-  - get public profile
-  - delete public profile
-*/
+  async deletePublicProfile({ slug }: Partial<User>): Promise<boolean> {
+    const user = await UserModel({ slug });
+    const profile = await PublicProfileModel({ user_id: user.id });
+
+    if (!profile?.exists || profile?.deleted_at) {
+      throw new HttpException('Not Exists', 404);
+    }
+
+    return await profile.delete();
+  }
+
+  async getPublicProfile({
+    slug,
+  }: Partial<User>): Promise<Partial<UserPublicProfileOutput>> {
+    const user = await UserModel({ slug });
+
+    if (!user.exists || user.isDeleted) {
+      throw new HttpException('Not Found', 404);
+    }
+
+    if (user.has_public_profile) {
+      throw new HttpException('Already exists', 204);
+    }
+
+    return await PublicProfileModel({ user_id: user.id });
+  }
+}
