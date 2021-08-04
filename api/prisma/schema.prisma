@@ -27,15 +27,17 @@ model User {
   created_at         DateTime  @default(now())
   updated_at         DateTime  @default(now())
 
-  UserTokens        UserTokens[]
-  File              File[]
-  Photo             Photo[]
-  Tags              Tags[]
-  UserLikes         UserLikes[]
-  PhotoComments     PhotoComments[]
-  CommentReactions  CommentReactions[]
-  FriendList        FriendList[]
-  UserPublicProfile UserPublicProfile[]
+  UserTokens            UserTokens[]
+  File                  File[]
+  Photo                 Photo[]
+  Tags                  Tags[]
+  UserLikes             UserLikes[]
+  PhotoComments         PhotoComments[]
+  CommentReactions      CommentReactions[]
+  FriendList            FriendList[]
+  UserPublicProfile     UserPublicProfile[]
+  Message               Message[]
+  ConversationRecepient ConversationRecepient[]
 
   @@unique([email, slug])
   @@map("users")
@@ -112,6 +114,50 @@ model PhotoComments {
   CommentReplies   CommentReplies[]
   CommentReactions CommentReactions[]
   @@map("photo_comments")
+}
+
+model Message {
+  id              Int       @id @default(autoincrement())
+  message         String
+  is_edited       Boolean?  @default(false)
+  is_seen         Boolean?  @default(false)
+  deleted_at      DateTime?
+  user_id         Int
+  receiver_id     Int
+  conversation_id Int
+  created_at      DateTime  @default(now())
+  updated_at      DateTime  @default(now())
+
+  Conversation Conversation @relation(fields: [conversation_id], references: [id])
+  User         User         @relation(fields: [user_id], references: [id])
+
+  @@map("message")
+}
+
+model Conversation {
+  id         Int       @id @default(autoincrement())
+  deleted_at DateTime?
+  created_at DateTime  @default(now())
+  updated_at DateTime  @default(now())
+
+  Message               Message[]
+  ConversationRecepient ConversationRecepient[]
+
+  @@map("conversation")
+}
+
+model ConversationRecepient {
+  id              Int      @id @default(autoincrement())
+  user_id         Int
+  conversation_id Int
+  created_at      DateTime @default(now())
+  updated_at      DateTime @default(now())
+
+  Conversation Conversation @relation(fields: [conversation_id], references: [id])
+  User         User         @relation(fields: [user_id], references: [id])
+
+  @@unique([user_id, conversation_id])
+  @@map("conversation_recepient")
 }
 
 model CommentReplies {

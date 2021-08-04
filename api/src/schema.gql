@@ -27,6 +27,12 @@ type CommentsWithPagination {
   meta: MetaPagination!
 }
 
+input CreateMessageInput {
+  conversation_id: Float
+  message: String!
+  receiver_id: Float!
+}
+
 input CreatePhotoComment {
   comment: String!
   photo_id: Float!
@@ -91,8 +97,27 @@ type FriendListOutputDto {
   user_id: Float!
 }
 
+input GetMessagesInput {
+  conversation_id: Float!
+  receiver_id: Float!
+}
+
 input GetUserFriendsInput {
   user_slug: String!
+}
+
+type MessageOutputDto {
+  User: UserGraphQL
+  conversation_id: Float!
+  created_at: DateTime
+  deleted_at: DateTime
+  id: Float!
+  is_edited: Boolean!
+  is_seen: Boolean!
+  message: String!
+  receiver_id: Float!
+  updated_at: DateTime
+  user_id: Float!
 }
 
 type MetaPagination {
@@ -109,6 +134,7 @@ type Mutation {
   changeEmail(changeEmailArgs: UserUpdateInput!): UserOutputDto!
   changeUserPassword(changePasswordArgs: UserUpdateInput!): UserOutputDto!
   createComment(commentCreate: CreatePhotoComment!): PhotoCommentsGraphQL!
+  createMessage(createMessageArgs: CreateMessageInput!): MessageOutputDto!
   createPhoto(createPhotoArgs: CreatePhotoInput!): PhotoOutputDto!
   createPublicProfile(createProfileArgs: UserPublicProfileInput!): UserPublicProfileOutput!
   createReaction(commentReaction: CommentReactionsCreateInput!): Boolean!
@@ -116,6 +142,7 @@ type Mutation {
   createResetToken(userEmail: CreateResetToken!): ResetPasswordTokenDto!
   createTag(createTagData: CreateTagsInput!): TagsOutputDto!
   deleteComment(comment_id: Float!): Boolean!
+  deleteMessage(id: Float!): Boolean!
   deletePhoto(deletePhoto: DeletePhotoInput!): Boolean!
   deletePublicProfile: Boolean!
   deleteTag(tag_id: DeleteTagInput!): Boolean!
@@ -125,6 +152,7 @@ type Mutation {
   signUp(signUpInput: UserSignUpInput!): UserOutputDto!
   singIn(signInInput: UserSignInInput!): UserOutputDto!
   updateComment(updateCommentArgs: CommentUpdateInput!): PhotoCommentsGraphQL!
+  updateMessage(updateMessageArgs: UpdateMessageInput!): MessageOutputDto!
   updatePhoto(updatePhotoArgs: UpdatePhotoInput!): PhotoOutputDto!
   updatePublicProfile(profileUpdateArgs: UserPublicProfileInput!): UserPublicProfileOutput!
   updateUser(updateUserArgs: UserUpdateInput!): UserOutputDto!
@@ -190,12 +218,14 @@ type PhotosWithPaginationDto {
 type Query {
   getCommentsByPhotoId(pagination: PhotoCommentsInput!): CommentsWithPagination!
   getLikedPhotos(paginationOptions: PaginationOptions!): PhotosWithPaginationDto!
+  getMessages(getMessagesArgs: GetMessagesInput!): [MessageOutputDto!]!
   getPhotoBySlug(photoSlug: String!): PhotoOutputDto!
   getPhotos(paginationOptions: PaginationOptions!): PhotosWithPaginationDto!
   getPublicProfile(slug: String!): UserPublicProfileOutput!
   getTagsByName(name: String!): [TagsOutputDto!]!
   getTagsByPhotoId(photoId: Float!): [TagsOutputDto!]!
   getTagsByUserId: [TagsOutputDto!]!
+  getUnreadedMessages: [MessageOutputDto!]!
   getUserFriends(getUserFriendsArgs: GetUserFriendsInput!): [FriendListOutputDto!]!
   getUserPhotos(paginationOptions: PaginationOptions!): PhotosWithPaginationDto!
   sayHello: String!
@@ -232,6 +262,13 @@ type TagsOutputDto {
   photo_id: Float!
   updated_at: DateTime!
   user_id: Float!
+}
+
+input UpdateMessageInput {
+  id: Float!
+  is_edited: Boolean!
+  is_seen: Boolean!
+  message: String!
 }
 
 input UpdatePhotoInput {
