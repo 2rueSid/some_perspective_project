@@ -4,6 +4,7 @@ import { PrismaService } from 'src/prisma_client/prisma.service';
 import { UserModel } from 'src/user/user.model';
 import {
   CreateMessageInput,
+  GetMessagesInput,
   MessageOutputDto,
   UpdateMessageInput,
 } from './message.dto';
@@ -23,11 +24,19 @@ export class MessagesService {
       throw new HttpException('Not Exists', 404);
     }
 
+    const conversation = await this.prisma.conversation.create({
+      data: {
+        user_id: user.id,
+        recepient_id: receiver_id,
+      },
+    });
+
     return await this.prisma.message.create({
       data: {
         message,
         receiver_id,
         user_id: user.id,
+        conversation_id: conversation.id,
       },
       include: {
         User: true,
@@ -70,12 +79,12 @@ export class MessagesService {
   }
 
   async getMessages(
-    receiverId: number,
+    { receiver_id, conversation_id }: GetMessagesInput,
     { id }: Partial<User>,
   ): Promise<MessageOutputDto[]> {
     await this.prisma.message.updateMany({
       where: {
-        receiver_id: receiverId,
+        receiver_id,
         user_id: id,
         is_seen: false,
       },
@@ -86,8 +95,7 @@ export class MessagesService {
 
     return await this.prisma.message.findMany({
       where: {
-        receiver_id: receiverId,
-        user_id: id,
+        conversation_id,
       },
     });
   }

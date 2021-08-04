@@ -19,6 +19,8 @@ export class MessageOutputDto {
   user_id?: number;
   @Field({ nullable: true })
   created_at?: Date;
+  @Field()
+  conversation_id?: number;
   @Field({ nullable: true })
   updated_at?: Date;
   @Field(() => UserGraphQL, { nullable: true })
@@ -43,4 +45,12 @@ export class UpdateMessageInput {
   is_seen?: boolean;
   @Field()
   message?: string;
+}
+
+@InputType()
+export class GetMessagesInput {
+  @Field()
+  receiver_id?: number;
+  @Field()
+  conversation_id?: number;
 }
