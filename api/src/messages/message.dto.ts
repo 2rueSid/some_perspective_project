@@ -33,6 +33,8 @@ export class CreateMessageInput {
   message?: string;
   @Field()
   receiver_id?: number;
+  @Field({ nullable: true })
+  conversation_id?: number;
 }
 
 @InputType()

@@ -1,22 +1,14 @@
-import {
-  PrismaClient,
-  Prisma,
-  User,
-  Conversation,
-  Message,
-} from '@prisma/client';
+import { PrismaClient, Prisma, Conversation, Message } from '@prisma/client';
 
 interface ConversationInterface extends Conversation {
   isDeleted: boolean;
   exists: boolean;
-  User: User;
   Message: Message[];
 }
 
 export const ConversationWithRelation =
   Prisma.validator<Prisma.ConversationArgs>()({
     include: {
-      User: true,
       Message: true,
     },
   });
@@ -31,7 +23,6 @@ export async function ConversationModel(
   > = await prisma.conversation.findUnique({
     where,
     include: {
-      User: true,
       Message: true,
     },
   });

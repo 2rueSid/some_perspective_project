@@ -15,7 +15,7 @@ export class MessagesService {
   constructor(private readonly prisma: PrismaService) {}
 
   async sendMessage(
-    { receiver_id, message }: CreateMessageInput,
+    { receiver_id, message, conversation_id }: CreateMessageInput,
     user: Partial<User>,
   ): Promise<Partial<MessageOutputDto>> {
     const receiver = await UserModel({ id: receiver_id });
@@ -24,23 +24,33 @@ export class MessagesService {
       throw new HttpException('Not Exists', 404);
     }
 
-    const conversation = await this.prisma.conversation.create({
-      data: {
+    if (conversation_id) {
+      return await this.createMessage({
+        receiver_id: receiver_id,
         user_id: user.id,
-        recepient_id: receiver_id,
+        conversation_id: conversation_id,
+        message,
+      });
+    }
+
+    const { id: conversationId } = await this.prisma.conversation.create({
+      data: {
+        deleted_at: null,
       },
     });
 
-    return await this.prisma.message.create({
-      data: {
-        message,
-        receiver_id,
-        user_id: user.id,
-        conversation_id: conversation.id,
-      },
-      include: {
-        User: true,
-      },
+    await this.prisma.conversationRecepient.createMany({
+      data: [
+        { user_id: user.id, conversation_id: conversationId },
+        { user_id: receiver_id, conversation_id: conversationId },
+      ],
+    });
+
+    return await this.createMessage({
+      receiver_id: receiver_id,
+      user_id: user.id,
+      conversation_id: conversationId,
+      message,
     });
   }
 
@@ -107,6 +117,20 @@ export class MessagesService {
       where: {
         receiver_id: id,
         is_seen: false,
+      },
+    });
+  }
+
+  protected async createMessage(data: {
+    conversation_id: number;
+    user_id: number;
+    receiver_id: number;
+    message: string;
+  }): Promise<Partial<MessageOutputDto>> {
+    return await this.prisma.message.create({
+      data,
+      include: {
+        User: true,
       },
     });
   }

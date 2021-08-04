@@ -28,6 +28,7 @@ type CommentsWithPagination {
 }
 
 input CreateMessageInput {
+  conversation_id: Float
   message: String!
   receiver_id: Float!
 }
