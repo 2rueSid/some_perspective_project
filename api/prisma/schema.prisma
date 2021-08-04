@@ -128,7 +128,8 @@ model Message {
   created_at      DateTime  @default(now())
   updated_at      DateTime  @default(now())
 
-  User User @relation(fields: [user_id], references: [id])
+  Conversation Conversation @relation(fields: [conversation_id], references: [id])
+  User         User         @relation(fields: [user_id], references: [id])
 
   @@map("message")
 }
@@ -141,7 +142,8 @@ model Conversation {
   created_at   DateTime  @default(now())
   updated_at   DateTime  @default(now())
 
-  User User @relation(fields: [user_id], references: [id])
+  User    User      @relation(fields: [user_id], references: [id])
+  Message Message[]
 
   @@unique([recepient_id, user_id])
   @@map("conversation")
