@@ -37,7 +37,8 @@ model User {
   FriendList        FriendList[]
   UserPublicProfile UserPublicProfile[]
 
-  Message Message[]
+  Message      Message[]
+  Conversation Conversation[]
   @@unique([email, slug])
   @@map("users")
 }
@@ -116,19 +117,34 @@ model PhotoComments {
 }
 
 model Message {
-  id          Int       @id @default(autoincrement())
-  message     String
-  is_edited   Boolean?  @default(false)
-  is_seen     Boolean?  @default(false)
-  deleted_at  DateTime?
-  user_id     Int
-  receiver_id Int
-  created_at  DateTime  @default(now())
-  updated_at  DateTime  @default(now())
+  id              Int       @id @default(autoincrement())
+  message         String
+  is_edited       Boolean?  @default(false)
+  is_seen         Boolean?  @default(false)
+  deleted_at      DateTime?
+  user_id         Int
+  receiver_id     Int
+  conversation_id Int
+  created_at      DateTime  @default(now())
+  updated_at      DateTime  @default(now())
 
   User User @relation(fields: [user_id], references: [id])
 
   @@map("message")
+}
+
+model Conversation {
+  id           Int       @id @default(autoincrement())
+  user_id      Int
+  recepient_id Int
+  deleted_at   DateTime?
+  created_at   DateTime  @default(now())
+  updated_at   DateTime  @default(now())
+
+  User User @relation(fields: [user_id], references: [id])
+
+  @@unique([recepient_id, user_id])
+  @@map("conversation")
 }
 
 model CommentReplies {
