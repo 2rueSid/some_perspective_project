@@ -1,5 +1,6 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { User } from '@prisma/client';
+import { ConversationModel } from 'src/conversation/conversation.model';
 import { PrismaService } from 'src/prisma_client/prisma.service';
 import { UserModel } from 'src/user/user.model';
 import {
@@ -24,7 +25,7 @@ export class MessagesService {
       throw new HttpException('Not Exists', 404);
     }
 
-    if (conversation_id) {
+    if (conversation_id && !!ConversationModel({ id: conversation_id })) {
       return await this.createMessage({
         receiver_id: receiver_id,
         user_id: user.id,
@@ -106,6 +107,7 @@ export class MessagesService {
     return await this.prisma.message.findMany({
       where: {
         conversation_id,
+        deleted_at: null,
       },
     });
   }
@@ -116,6 +118,7 @@ export class MessagesService {
     return await this.prisma.message.findMany({
       where: {
         receiver_id: id,
+        deleted_at: null,
         is_seen: false,
       },
     });

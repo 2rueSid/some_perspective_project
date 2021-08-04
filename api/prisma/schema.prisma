@@ -131,7 +131,6 @@ model Message {
   Conversation Conversation @relation(fields: [conversation_id], references: [id])
   User         User         @relation(fields: [user_id], references: [id])
 
-  @@unique([conversation_id, user_id])
   @@map("message")
 }
 
