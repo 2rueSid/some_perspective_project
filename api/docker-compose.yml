@@ -11,11 +11,8 @@ services:
       - '5433:5432'
     expose:
       - '5433'
-    environment:
-      POSTGRES_DB: postgres
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: root
-      POSTGRES_HOST_AUTH_METHOD: trust
+    env_file:
+      - ./.postgres.env
 
   api:
     container_name: app
@@ -37,18 +34,5 @@ services:
     tty: true
     command: ['node']
 
-  rabbitmq:
-    image: rabbitmq:3.9.1-management
-    container_name: rabbitmq
-    hostname: rabbitmq
-    ports:
-      - '5672:5672'
-      - '15672:15672'
-    volumes:
-      - rabbitmqdata:/var/lib/rabbitmq
-      - ./rabbitmq.config:/etc/rabbitmq/rabbitmq.config
-      - ./definitions.json:/etc/rabbitmq/definitions.json
-
 volumes:
   hobby_project_db:
-  rabbitmqdata:

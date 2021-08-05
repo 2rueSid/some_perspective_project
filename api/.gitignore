@@ -5,6 +5,7 @@
 
 /uploads
 rabbitmq.env
+.postgres.env
 
 # User-specific stuff:
 .idea/**/workspace.xml
