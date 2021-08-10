@@ -6,6 +6,7 @@ import { generateSlug } from 'src/utils/generate_slug';
 import {
   CreatePhotoInput,
   DeletePhotoInput,
+  GetPhotosWithPagination,
   MetaPagination,
   PaginationOptions,
   PhotoOutputDto,
@@ -82,12 +83,14 @@ export class PhotoService {
     take,
     skip,
     page,
-  }: PaginationOptions): Promise<PhotosWithPaginationDto> {
+    sort_by,
+  }: GetPhotosWithPagination): Promise<PhotosWithPaginationDto> {
     const where = { deleted_at: null };
     const photos = await this.getManyPhotos(
       where,
       { take, skip },
       bunchOfRelations,
+      sort_by,
     );
 
     if (!photos?.length) {
@@ -166,6 +169,7 @@ export class PhotoService {
     where: Prisma.PhotoWhereInput,
     { take, skip }: PaginationOptions,
     relations: Prisma.PhotoInclude,
+    sort_by?: string,
   ): Promise<PhotoOutputDto[]> {
     const photos = await this.prisma.photo.findMany({
       take,
